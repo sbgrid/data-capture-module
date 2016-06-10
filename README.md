@@ -7,5 +7,4 @@ Code adapted from `sbgrid-databank`
 
 For now:
 
-    export FLASK_APP=dcm.py
-    flask run
+    python dcm.py
