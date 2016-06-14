@@ -1,0 +1,7 @@
+---
+# does not work alone; needs cron environment and shell config
+# crontab 
+- name: "usg run"
+  cron: name="run upload script generator" job="/data/src/usg.py" minute="*/5"
+  #cron: name="run upload script generator" job="/data/src/usg.py" minute="*/5" state=absent
+

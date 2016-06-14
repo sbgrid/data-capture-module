@@ -1,0 +1,30 @@
+---
+#
+- name: "epel install"
+  yum: pkg={{ item }} state=present
+  with_items:
+   - epel-release
+
+- name: "package install"
+  yum: pkg={{ item }} state=present
+  with_items:
+   - lighttpd
+
+- name: "lighttpd module config"
+  copy: src=etc/lighttpd/{{ item }} dest=/etc/lighttpd force=yes backup=yes
+  with_items:
+   - modules.conf
+#   - lighttpd.conf
+  notify:
+   - httpd-restart
+
+- name: "lighttpd config"
+  template: src=etc/lighttpd/lighttpd.conf.j2 dest=/etc/lighttpd/lighttpd.conf force=yes backup=yes 
+  notify: httpd-restart
+
+- name: "lighttpd service"
+  service: name=lighttpd state=started enabled=yes
+
+#- name: "remove default pages"
+#  file: path=/var/www/lighttpd state=absent
+

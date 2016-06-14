@@ -1,0 +1,5 @@
+---
+#
+- name: "httpd-restart"
+  service: name=lighttpd state=restarted
+

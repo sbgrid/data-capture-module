@@ -1,0 +1,14 @@
+---
+#
+
+# groups
+- name: "sbgriddb group"
+  group: name=sbgriddb state=present gid=555
+- name: "sbgriddb user"
+  user: name=sbgriddb shell=/bin/bash system=yes group=sbgriddb uid=555
+
+# group for upload users
+- name: "upload group"
+  group: name=upload state=present 
+
+
