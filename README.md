@@ -24,7 +24,19 @@ Assumed to be CentOS 6 (which isn't checked)
 - reorganize tasks (NFS-related, etc)
 - vagrant file and retest
 - improve docs 
+- lighttpd paths 
+- code deployment path
 
+
+## code
+cleanup still in progress.
+
+`api` directory for things related to listening for messages from frontend systems.
+Possibly sending messages back as well.
+
+### TODO
+- filesystem paths should be configurable (at least, base directory)
+- converge on API endpoint spec (`dcm.py`, `ur.py`,`doc/api.md`)
 
 For now:
 
