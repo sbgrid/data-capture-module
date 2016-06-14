@@ -6,7 +6,7 @@
 ##
 #######################################################################
 
-# refuse connections not from databank-frontend
+# refuse connections not from frontend or localhost
 $HTTP["remoteip"] !~ "{{ FRONTEND_IP }}" {
 url.access-deny = ("")
 }
@@ -20,7 +20,7 @@ url.access-deny = ("")
 ## chroot example aswell.
 ##
 var.log_root    = "/var/log/lighttpd"
-var.server_root = "/data/src/rh"
+var.server_root = "{{ DCM_PATH }}/api"
 var.state_dir   = "/var/run"
 var.home_dir    = "/var/lib/lighttpd"
 var.conf_dir    = "/etc/lighttpd"

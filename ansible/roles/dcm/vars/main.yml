@@ -4,3 +4,4 @@
 # hosts allowed to send messages requesting an upload script
 FRONTEND_IP : "127.0.0.1"
 
+DCM_PATH : "/usr/local/dcm"

@@ -12,6 +12,7 @@ ansible roles are ported and (somewhat) consolidated.
 Assumed to be CentOS 6 (which isn't checked)
 
 - `FRONTEND_IP` is the address of the server making requests (aka - the server requesting upload information, not the end-user's IP).
+- `DCM_PATH` root directory for code
 
 ### stubs to be made configurable
 - postfix hostname (probably depreciate this)
@@ -25,11 +26,15 @@ Assumed to be CentOS 6 (which isn't checked)
 - vagrant file and retest
 - improve docs 
 - lighttpd paths 
-- code deployment path
+- code deployment path (and remove duplicate pulls from same repo)
 
 
 ## code
 cleanup still in progress.
+
+### TODO
+- move hard-coded config to more configurable approach
+- test things after incorporation into this repository (and dis-entangling)
 
 `api` directory for things related to listening for messages from frontend systems.
 Possibly sending messages back as well.
