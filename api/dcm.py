@@ -25,8 +25,8 @@ def script_request(dataset_id):
     data = {}
     data['datasetId'] = dataset_id
     with open('rsync.sh', 'r') as myfile:
-            data=myfile.read()
-    data['script'] = data
+            script=myfile.read()
+    data['script'] = script
     resp = Response(response=json.dumps(data),
         status=200, \
         mimetype="application/json")
