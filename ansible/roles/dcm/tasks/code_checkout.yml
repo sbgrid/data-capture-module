@@ -13,4 +13,6 @@
 # ssh-agent does handle keys through ansible
 - name: "git, webupdate" 
   git: repo=git@github.com:sbgrid/data-capture-module.git dest=/usr/local/dcm
+  tags: 
+   - code-update
 
