@@ -12,6 +12,7 @@
    - python
    - python-dateutil
    - nfs-utils
+   - git
 
 - name: "sshd config"
   copy: src=etc/ssh/sshd_config dest=/etc/ssh/sshd_config force=yes backup=yes owner=root group=root mode=0600
