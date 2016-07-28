@@ -1,0 +1,16 @@
+---
+#
+# pulling code from github
+- name: "git-install"
+  yum: name=git state=present
+
+- name: "ssh-git: github host key fingerprint "
+  copy: src=etc/ssh/ssh_known_hosts dest=/etc/ssh/ssh_known_hosts force=yes backup=yes
+
+- name: "source directory existance"
+  file: path="/usr/local/dcm/" state=directory
+
+# ssh-agent does handle keys through ansible
+- name: "git, webupdate" 
+  git: repo=git@github.com:sbgrid/data-capture-module.git dest=/usr/local/dcm
+
