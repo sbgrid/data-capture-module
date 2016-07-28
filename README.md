@@ -14,6 +14,8 @@ Assumed to be CentOS 6 (which isn't checked)
 - `FRONTEND_IP` is the address of the server making requests (aka - the server requesting upload information, not the end-user's IP).
 - `DCM_PATH` root directory for code
 
+For local testing / develoment, it may be easier to remove the IP restrictions (or fine-tune them).
+
 ### stubs to be made configurable
 - postfix hostname (probably depreciate this)
 - username for upload script generation

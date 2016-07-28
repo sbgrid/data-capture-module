@@ -8,11 +8,11 @@
   copy: src=etc/ssh/ssh_known_hosts dest=/etc/ssh/ssh_known_hosts force=yes backup=yes
 
 - name: "source directory existance"
-  file: path="/usr/local/dcm/" state=directory
+  file: path="{{ DCM_PATH }}" state=directory
 
 # ssh-agent does handle keys through ansible
 - name: "git, webupdate" 
-  git: repo=git://github.com/sbgrid/data-capture-module.git dest=/usr/local/dcm
+  git: repo=git://github.com/sbgrid/data-capture-module.git dest={{ DCM_PATH }}
   tags: 
    - code-update
 
