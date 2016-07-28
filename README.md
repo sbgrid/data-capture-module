@@ -25,10 +25,8 @@ For local testing / develoment, it may be easier to remove the IP restrictions (
 - clean up sshd config
 - depreciate postfix/email configs
 - reorganize tasks (NFS-related, etc)
-- vagrant file and retest
 - improve docs 
 - lighttpd paths 
-- code deployment path (and remove duplicate pulls from same repo)
 
 
 ## code

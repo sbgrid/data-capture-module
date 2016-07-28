@@ -18,7 +18,7 @@ Endpoint, parameters and behaviours.
 `http://$host/sr.py`
 
 parameter: dataset identifier
-response: 404 code and empty repsonse means the script isn't ready yet; 200 and json dictionary w\ single key `script`
+response: 404 code and empty response means the script isn't ready yet; 200 and json dictionary w\ single key `script`
 
 
 ### post-upload
