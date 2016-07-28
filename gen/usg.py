@@ -7,17 +7,11 @@ upload script generator
 
 import commands
 import datetime
-import smtplib
 import json
 import glob
 import os
 import os.path
 import sys
-
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
-from email import encoders
 
 HOMEDIR = 'deposit' # upload directory
 DURATION_DAYS = 7 # number of days upload accounts will be active
@@ -79,55 +73,16 @@ def generate_upload_script(uid):
     return fn
     
 
-def email_script(addr, uid, filename ): 
-    sender = 'dcm-dev.internal'
-    msg = MIMEMultipart()
-    msg['From'] = sender
-    msg['To'] = addr
-    msg['Subject'] = 'Upload Script' 
-    filebase = os.path.basename( filename )
-    txt = '''
-Please use the attached script to deposit dataset id %s.  The dataset must be in a single directory.  Before uploading, this script will generate a checksum for all files in the dataset to allow for verification.
-
- 1) Download '%s'
- 2) Open a terminal window in the same directory
- 3) Run the script ('bash ./%s').
-
-The script will ask you for a full path (beginning with a '/') to the directory containing the dataset.  All files in this directory will be considered part of the deposited dataset.
-
-This upload script will expire after seven days; please contact us if you need more time to transfer this dataset.
-
-If you have problems or questions, please contact support
-
-    ''' % ( uid, filebase, filebase )
-    msg.attach( MIMEText( txt ) )
-    
-    part = MIMEBase('application','octet-stream')
-    inp = open( filename, 'r' )
-    part.set_payload( inp.read() )
-    inp.close()
-    encoders.encode_base64( part )
-    part.add_header('Content-Disposition','attachment; filename="{0}"'.format( filebase  ) )
-    msg.attach( part )
-
-    srv = smtplib.SMTP()
-    srv.connect()
-    srv.sendmail( sender, [addr] + BCCS , msg.as_string() )
-    srv.quit()
-
 def proc( req_file, verbose = True ):
     inp = open( req_file, 'r' )
     x = json.load( inp )
     inp.close()
     uid = x['uid']
-    dep_email = x['dep_email']
     if verbose:
         print('request uid = %s ' % uid )
 
     create_temporary_account( uid )
-    fn = generate_upload_script( uid )
-    email_script( dep_email, uid, fn ) 
-    
+    _ = generate_upload_script( uid )
     return uid
 
 def test1():
