@@ -16,7 +16,7 @@ import sys
 HOMEDIR = 'deposit' # upload directory
 DURATION_DAYS = 7 # number of days upload accounts will be active
 UPLOADHOST = 'dcm-dev.internal' # hostname that uploads will land on
-TEMPLATE = '/usr/local/dcm/upload_script.m4' 
+TEMPLATE = '/usr/local/dcm/gen/upload_script.m4' 
 LOCKFILE = '/var/run/usg.pid'
 
 BCCS = []
