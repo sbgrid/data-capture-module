@@ -4,6 +4,6 @@
 - include: groups.yml
 - include: lighttpd.yml
 - include: directories.yml
-#- include: code_checkout.yml
+- include: code_checkout.yml
 #- include: postfix.yml
 #- include: cron.yml
