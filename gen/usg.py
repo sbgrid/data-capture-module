@@ -40,6 +40,15 @@ def create_temporary_account(uid):
         print(r0)
         print(e0)
         err('problem creating user %s' % uid)
+    
+    # need to add to rsshusers group on centos 6.8 (6.6 doesn't require this, others untested)
+    cmd0b = 'usermod -a -G rsshusers %s' % uid
+    (e0b, r0b) = commands.getstatusoutput( cmd0b )
+    if 0 != e0b:
+        print(cmd0b)
+        print(r0b)
+        print(e0b)
+        print('warning - problem adding user %s to rsshusers group' % uid )
 
     # keypair; empty passphrase
     # it actually makes more sense to use a fixed name for the key
