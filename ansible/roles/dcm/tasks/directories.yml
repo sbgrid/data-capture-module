@@ -13,7 +13,6 @@
 - name: "deposition processed directory"
   file: path='/deposit/processed' state=directory
 
-- name: "data hold directory existance"
-  file: path="/hold" state=directory owner=sbgriddb group=sbgriddb
-
+- name: 'location for request files corresponding to uploaded datasets'
+  file: path='/nfs/biodv/stage' owner='sbgdb' group='sbgdb' state=directory
 
