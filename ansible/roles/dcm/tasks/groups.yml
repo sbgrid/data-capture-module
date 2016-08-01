@@ -2,10 +2,10 @@
 #
 
 # groups
-- name: "sbgriddb group"
-  group: name=sbgriddb state=present gid=555
-- name: "sbgriddb user"
-  user: name=sbgriddb shell=/bin/bash system=yes group=sbgriddb uid=555
+- name: "dcm group"
+  group: name=sbgdb state=present gid=1000
+- name: "dcm user"
+  user: name=sbgdb shell=/bin/bash system=yes group=sbgdb uid=1000
 
 # group for upload users
 - name: "upload group"
