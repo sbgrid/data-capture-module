@@ -12,7 +12,7 @@ HOLD=/nfs/biodv/
 SRC=/usr/local/dcm/
 
 # user to own uploaded datasets; change to production user after testing
-DSETUSER=sbdg
+DSETUSER=sbgdb
 
 if [ -e $LOCKFILE ]; then
 	echo "post_upload scan still in progress at " `date` " , aborting"
