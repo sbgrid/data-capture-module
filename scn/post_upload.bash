@@ -50,7 +50,7 @@ do
 				break
 			fi
 			rm -rf ${DEPOSIT}/${ulid}/${ulid}
-			chown -R $DSETUSER:$DSETGROUP ${HOLD}/${ulid}
+			chown -R $DSETUSER:$DSETUSER ${HOLD}/${ulid}
 			echo "data moved"
 		else
 			echo "handle error - duplicate upload id $ulid"
