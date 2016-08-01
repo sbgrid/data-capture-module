@@ -86,7 +86,8 @@ def proc( req_file, verbose = True ):
     inp = open( req_file, 'r' )
     x = json.load( inp )
     inp.close()
-    uid = x['uid']
+    #uid = x['uid']
+    uid = x['datasetId']
     if verbose:
         print('request uid = %s ' % uid )
 
