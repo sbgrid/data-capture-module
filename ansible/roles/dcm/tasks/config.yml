@@ -47,3 +47,11 @@
 - name: "environmental variable for upload host"
   template: src=root/.bashrc.j2 dest=/root/.bashrc owner=root group=root force=yes backup=yes
 
+- name: "test script directory"
+  file: path=/root/scripts state=directory 
+
+- name: "test scripts"
+  copy: src=root/scripts/{{ item }} dest=/root/scripts/{{ item }} 
+  with_items:
+   - dcm-test01.sh
+
