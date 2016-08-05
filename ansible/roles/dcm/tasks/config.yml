@@ -44,3 +44,6 @@
 - name: "rpc start"
   service: name=rpcbind state=started
 
+- name: "environmental variable for upload host"
+  template: src=root/.bashrc.j2 dest=/root/.bashrc owner=root group=root force=yes backup=yes
+
