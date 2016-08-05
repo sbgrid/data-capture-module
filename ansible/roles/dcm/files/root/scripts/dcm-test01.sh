@@ -9,5 +9,6 @@ if [ "$1" == "" ]; then
 	exit
 fi
 
-curl -H "Content-Type: application/json" -X POST -d '{"datasetId":"${1}", "userId":"testuser-t03"}' http://127.0.0.1/ur.py
+
+curl -H "Content-Type: application/json" -X POST -d "{\"datasetId\":\"${1}\", \"userId\":\"testuser-t03\"}" http://127.0.0.1/ur.py
 

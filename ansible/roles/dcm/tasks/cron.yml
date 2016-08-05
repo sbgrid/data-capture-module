@@ -1,7 +1,7 @@
 ---
-# does not work alone; needs cron environment and shell config
-# crontab 
-- name: "usg run"
-  cron: name="run upload script generator" job="/data/src/usg.py" minute="*/5"
-  #cron: name="run upload script generator" job="/data/src/usg.py" minute="*/5" state=absent
+- name: "usg cron"
+  cron: name='usg cron' job='{{ DCM_PATH }}/gen/usg-wrap.bash >> /var/log/usg.log' minute='*/1' 
+
+- name: "scan cron"
+  cron: name='scan cron' job='{{ DCM_PATH }}/scn/post_upload.bash >> /var/log/post_upload.log' minute='*/1' 
 
