@@ -5,7 +5,6 @@ upload script generator
 UPLOADHOST moved to environmental variable
 '''
 
-
 import commands
 import datetime
 import json
@@ -13,6 +12,7 @@ import glob
 import os
 import os.path
 import sys
+import shutil
 
 HOMEDIR = 'deposit' # upload directory
 DURATION_DAYS = 7 # number of days upload accounts will be active
@@ -70,7 +70,7 @@ def create_temporary_account(uid):
         print(r3)
         err('problem with permission change for authorized_keys for %s (%s)' % (uid,r3) )
 
-def generate_upload_script(uid):
+def generate_upload_script(uid, cache_dir = '/deposit/gen/' ):
     try:
         UPLOADHOST = os.environ['UPLOADHOST']
     except KeyError:
@@ -84,6 +84,13 @@ def generate_upload_script(uid):
         err('problem generating upload script for %s' % uid)
     # return path to the script for simpler emailing
     fn = '/%s/%s/upload-%s.bash' % ( HOMEDIR, uid, uid )
+    (e1, _ ) = commands.getstatusoutput('chmod o-r %s' % fn )
+    if 0 != e1:
+        err('problem restricting script read permissions prior to caching')
+    shutil.copy( fn, os.path.join( cache_dir, 'upload-%s.bash' % uid ) )
+    (e2, _ ) = commands.getstatusoutput( 'chown lighttpd:lighttpd %s ' % os.path.join( cache_dir, 'upload-%s.bash' % uid ) ) 
+    if 0 != e2:
+        err('problem changing ownership of generated script')
     return fn
     
 

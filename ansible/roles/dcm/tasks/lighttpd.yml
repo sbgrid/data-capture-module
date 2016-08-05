@@ -25,6 +25,8 @@
 - name: "lighttpd service"
   service: name=lighttpd state=started enabled=yes
 
+- name: 'lighttpd script cache directory'
+  file: state=directory path='/deposit/gen' owner=lighttpd group=lighttpd 
 #- name: "remove default pages"
 #  file: path=/var/www/lighttpd state=absent
 
