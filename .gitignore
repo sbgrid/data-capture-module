@@ -1,3 +1,4 @@
 *.swp
 *.pyc
 .vagrant
+secrets.yml

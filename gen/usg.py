@@ -2,6 +2,7 @@
 
 '''
 upload script generator
+UPLOADHOST moved to environmental variable
 '''
 
 
@@ -15,7 +16,7 @@ import sys
 
 HOMEDIR = 'deposit' # upload directory
 DURATION_DAYS = 7 # number of days upload accounts will be active
-UPLOADHOST = 'dcm-dev.internal' # hostname that uploads will land on
+#UPLOADHOST = 'dcm-dev.internal' # hostname that uploads will land on
 TEMPLATE = '/usr/local/dcm/gen/upload_script.m4' 
 LOCKFILE = '/var/run/usg.pid'
 
@@ -70,6 +71,10 @@ def create_temporary_account(uid):
         err('problem with permission change for authorized_keys for %s (%s)' % (uid,r3) )
 
 def generate_upload_script(uid):
+    try:
+        UPLOADHOST = os.environ['UPLOADHOST']
+    except KeyError:
+        err('UPLOADHOST environmental variable not yet')
     cmd0 = 'cd /%s/%s ; sudo -u %s m4 -D UPLOADHOST=%s -D UID=%s %s > upload-%s.bash' % (HOMEDIR, uid, uid, UPLOADHOST, uid, TEMPLATE,uid) #upload permission will be owned by system user, not upload user - shouldn't matter
     #redirect is in home directories; no concurrency problem.
     (e0, r0) = commands.getstatusoutput( cmd0 )
