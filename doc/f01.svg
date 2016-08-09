@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width='600' height='200'>
+	<image id='g01' xlink:href='g01.svg' width='200' height='200' x='0' y='0'/>
+	<image id='g02' xlink:href='g02.svg' width='200' height='200' x='200' y='0'/>
+	<image id='g03' xlink:href='g03.svg' width='200' height='200' x='400' y='0'/>
+</svg>

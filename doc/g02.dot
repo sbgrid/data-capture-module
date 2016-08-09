@@ -1,0 +1,10 @@
+digraph dlm02
+{
+	label="Dataverse Provides upload script to user"
+	User[shape="box",style="rounded"];
+	Dataverse[shape="box"];
+	DLM[shape="box"];
+	Dataverse -> DLM[label="{datasetId}"];
+	DLM -> Dataverse[label="{datasetId,script}"];
+	Dataverse -> User[label="upload instructions and script"];
+}
