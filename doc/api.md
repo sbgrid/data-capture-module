@@ -26,3 +26,5 @@ checksum validation success or failure.
 ` { "userId":"$bar", "datasetId" : "$foo" , "status" : "$status"}`
 status either "validation passed" or "validation failed"
 
+example: `$DATAVERSE_URL/api/datasets:persistentId/dataCaptureModule/checksumValidation?persistentId=$DATASETID`
+
