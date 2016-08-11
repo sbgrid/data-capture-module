@@ -10,7 +10,8 @@
 - `userId` : identifier for the user (key name and which identifier TBD)
 - `datasetId` : primary key identifier for the dataset, not used internally but should be passed back to dataverse
 
-*TODO* this should be not fail if this endpoint is called multiple times for the same script
+If this endpoints is called multiple times with the same datasetIdentifier, only the first request will be processed - others will be ignored.
+This is **NOT** reflected in the return code from `ur.py`.
 
 
 ### query / recieve transfer script

@@ -92,7 +92,14 @@ def generate_upload_script(uid, cache_dir = '/deposit/gen/' ):
     if 0 != e2:
         err('problem changing ownership of generated script')
     return fn
-    
+
+def generated_already( uid ):
+    '''
+    return True if uid has already been processed, false otherwise
+    return False otherwise
+    '''
+    (e,_) = commands.getstatusoutput('id %s' % uid )
+    return 0 == e
 
 def proc( req_file, verbose = True ):
     inp = open( req_file, 'r' )
@@ -100,6 +107,11 @@ def proc( req_file, verbose = True ):
     inp.close()
     #uid = x['uid']
     uid = x['datasetId']
+    if generated_already( uid ):
+        # nothing new to do, bail out of this one
+        if verbose:
+            print('request uid %s already processed')
+        return None
     if verbose:
         print('request uid = %s ' % uid )
 
@@ -131,8 +143,14 @@ def proc_requests( req_dir = '/deposit/requests', done_dir = '/deposit/processed
         try:
             print('processing request file %s ' % req )
             ulid = proc( req )
-            fn = '%s.json' % ulid
-            os.rename( req, os.path.join( done_dir, fn ) )
+            if None != ulid:
+                # generated new request
+                fn = '%s.json' % ulid
+                os.rename( req, os.path.join( done_dir, fn ) )
+            else:
+                # duplicate request, get rid of the request file
+                print('request file %s contains info already processed, deleting' % req )
+                os.remove( req )
         except Exception, e : #probably bad practice; should catche more specific exceptions
             print('error processing request file %s' % req )
             print(e)
