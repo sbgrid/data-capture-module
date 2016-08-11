@@ -9,7 +9,7 @@ UPLOAD_ROOT='/deposit/'
 def proc():
     form = cgi.FieldStorage()
     try:
-        uid = form['datasetId'].value
+        uid = form['datasetIdentifier'].value
     except KeyError:
         print('Status:400\n\n')
         return
@@ -19,7 +19,7 @@ def proc():
         return
     with open(fn, 'r') as inp:
         dat = inp.read()
-    x = {'datasetId':uid, 'script':dat}
+    x = {'datasetIdentifier':uid, 'script':dat}
     print('Content-Type: application/json\n\n%s' % json.dumps( x ) )
 
 if __name__ == '__main__':

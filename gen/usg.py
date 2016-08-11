@@ -105,8 +105,7 @@ def proc( req_file, verbose = True ):
     inp = open( req_file, 'r' )
     x = json.load( inp )
     inp.close()
-    #uid = x['uid']
-    uid = x['datasetId']
+    uid = x['datasetIdentifier']
     if generated_already( uid ):
         # nothing new to do, bail out of this one
         if verbose:
