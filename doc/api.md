@@ -35,3 +35,5 @@ status either "validation passed" or "validation failed"
 
 example: `$DATAVERSE_URL/api/datasets:persistentId/dataCaptureModule/checksumValidation?persistentId=$DATASETID`
 
+**FIXME** There is an additional failure mode that dataverse is not currently notified of: problems moving files out of the upload filesystem.
+
