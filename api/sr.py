@@ -20,7 +20,7 @@ def proc():
         return
     with open(fn, 'r') as inp:
         dat = inp.read()
-    with open( os.path.join( HOLD_ROOT, '%s.json' % uid ) ) as inp:
+    with open( os.path.join( UPLOAD_ROOT, 'processed', '%s.json' % uid ) ) as inp:
         req = json.load( inp )
     if req['datasetIdentifier'] != uid:
         # should never happen - defensive programming, or paranoia depending on perspective
