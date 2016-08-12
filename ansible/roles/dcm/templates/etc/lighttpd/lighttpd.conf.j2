@@ -7,7 +7,7 @@
 #######################################################################
 
 # refuse connections not from frontend or localhost
-$HTTP["remoteip"] !~ "{{ FRONTEND_IP }}" {
+$HTTP["remoteip"] !~ "{{ FRONTEND_IP }}|127.0.0.1" {
 url.access-deny = ("")
 }
 

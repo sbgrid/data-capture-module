@@ -21,6 +21,7 @@
 - name: "lighttpd config"
   template: src=etc/lighttpd/lighttpd.conf.j2 dest=/etc/lighttpd/lighttpd.conf force=yes backup=yes 
   notify: httpd-restart
+  tags: web
 
 - name: "lighttpd service"
   service: name=lighttpd state=started enabled=yes
