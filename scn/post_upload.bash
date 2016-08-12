@@ -37,7 +37,7 @@ do
 		# handle checksum failure
 		mv files.sha files-`date '+%Y%m%d-%H:%M'`.sha # rename previous indicator file
 		echo "checksum failure"
-		msg=`cat $HOLD/stage/${ulid}.json | jq ' . + {status:"validation failed"}'`
+		msg=`cat $DEPOSIT/processed/${ulid}.json | jq ' . + {status:"validation failed"}'`
 		echo "debug(msg): $msg"
 		#TODO - sent to dv endpoint
 	else
@@ -55,7 +55,7 @@ do
 			rm -rf ${DEPOSIT}/${ulid}/${ulid}
 			chown -R $DSETUSER:$DSETUSER ${HOLD}/${ulid}
 			echo "data moved"
-			msg=`cat $HOLD/stage/${ulid}.json | jq ' . + {status:"validation passed"}'`
+			msg=`cat $DEPOSIT/procssed/${ulid}.json | jq ' . + {status:"validation passed"}'`
 			echo "debug(msg): $msg"
 			#TODO - send to dv endpoint 
 		else
