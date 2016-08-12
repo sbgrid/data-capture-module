@@ -109,7 +109,7 @@ def proc( req_file, verbose = True ):
     if generated_already( uid ):
         # nothing new to do, bail out of this one
         if verbose:
-            print('request uid %s already processed')
+            print('request uid %s already processed' % req_file )
         return None
     if verbose:
         print('request uid = %s ' % uid )
