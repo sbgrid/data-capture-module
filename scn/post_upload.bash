@@ -55,7 +55,7 @@ do
 			rm -rf ${DEPOSIT}/${ulid}/${ulid}
 			chown -R $DSETUSER:$DSETUSER ${HOLD}/${ulid}
 			echo "data moved"
-			msg=`cat $DEPOSIT/procssed/${ulid}.json | jq ' . + {status:"validation passed"}'`
+			msg=`cat $DEPOSIT/processed/${ulid}.json | jq ' . + {status:"validation passed"}'`
 			echo "debug(msg): $msg"
 			#TODO - send to dv endpoint 
 		else
