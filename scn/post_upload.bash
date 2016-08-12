@@ -38,6 +38,7 @@ do
 		mv files.sha files-`date '+%Y%m%d-%H:%M'`.sha # rename previous indicator file
 		echo "checksum failure"
 		msg=`cat $HOLD/stage/${ulid}.json | jq ' . + {status:"validation failed"}'`
+		echo "debug(msg): $msg"
 		#TODO - sent to dv endpoint
 	else
 		# handle checksum success
@@ -55,6 +56,7 @@ do
 			chown -R $DSETUSER:$DSETUSER ${HOLD}/${ulid}
 			echo "data moved"
 			msg=`cat $HOLD/stage/${ulid}.json | jq ' . + {status:"validation passed"}'`
+			echo "debug(msg): $msg"
 			#TODO - send to dv endpoint 
 		else
 			echo "handle error - duplicate upload id $ulid"
