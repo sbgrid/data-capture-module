@@ -43,9 +43,9 @@ do
 		echo "checksum failure"
 		msg=`cat $DEPOSIT/processed/${ulid}.json | jq ' . + {status:"validation failed"}'`
 		echo "debug(msg): $msg"
-		cat $msg > /tmp/${ulid}.json
+		echo "$msg" > /tmp/${ulid}.json
 		#sent to dv endpoint
-		curl -X POST -X "X-Dataverse-key: ${DVAPIKEY}" -H 'Content-Type: application/json' -H 'Accept: application/json' -d@/tmp/${ulid}.json https://$DVHOSTINT/api/datasets/dataCaptureModule/checksumValidation
+		curl -k -X POST -H "X-Dataverse-key: ${DVAPIKEY}" -H 'Content-Type: application/json' -H 'Accept: application/json' -d@/tmp/${ulid}.json https://$DVHOSTINT/api/datasets/dataCaptureModule/checksumValidation
 		#TODO - cleanup /tmp once done testing
 	else
 		# handle checksum success
@@ -65,9 +65,9 @@ do
 			msg=`cat $DEPOSIT/processed/${ulid}.json | jq ' . + {status:"validation passed"}'`
 			echo "debug(msg): $msg"
 			#TODO - send to dv endpoint 
-			cat $msg > /tmp/${ulid}.json
+			echo "$msg" > /tmp/${ulid}.json
 			#sent to dv endpoint
-			curl -X POST -X "X-Dataverse-key: ${DVAPIKEY}" -H 'Content-Type: application/json' -H 'Accept: application/json' -d@/tmp/${ulid}.json https://$DVHOSTINT/api/datasets/dataCaptureModule/checksumValidation
+			curl -k -X POST -H "X-Dataverse-key: ${DVAPIKEY}" -H 'Content-Type: application/json' -H 'Accept: application/json' -d@/tmp/${ulid}.json https://$DVHOSTINT/api/datasets/dataCaptureModule/checksumValidation
 			#TODO - cleanup /tmp once done testing
 		else
 			echo "handle error - duplicate upload id $ulid"
