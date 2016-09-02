@@ -13,6 +13,7 @@
 If this endpoints is called multiple times with the same datasetIdentifier, only the first request will be processed - others will be ignored.
 This is **NOT** reflected in the return code from `ur.py`.
 
+This endpoint will also send the script to `https://$DVHOSTINT/api/datasets/<id>/dataCaptureModule/rsync`, because we're iterating on the API.
 
 ### query / recieve transfer script
 Endpoint, parameters and behaviours.
