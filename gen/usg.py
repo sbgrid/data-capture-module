@@ -116,7 +116,7 @@ def proc( req_file, verbose = True ):
 
     create_temporary_account( uid )
     fname = generate_upload_script( uid )
-    (e,o) = commands.getstatusoutput('curl -k -X POST -H "Content-Type: application/text" -H "Accept: application/json" -H "X-Dataverse-key: $DVAPIKEY" -d@%s https://$DVHOSTINT/api/datasets/%s/dataCaptureModule/rsync' % ( fname, x['datasetId'] ) )
+    (e,o) = commands.getstatusoutput('curl -k -X POST -H "Content-Type: application/text" -H "Accept: application/json" -H "X-Dataverse-key: $DVAPIKEY" --data-binary @%s https://$DVHOSTINT/api/datasets/%s/dataCaptureModule/rsync' % ( fname, x['datasetId'] ) )
     if 0 != e :
         print('problem sending script to dataverse for %s; it\'ll have to ask for it' % uid)
         print('output from failed command:')
