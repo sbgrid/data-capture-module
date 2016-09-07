@@ -45,7 +45,9 @@ do
 		echo "debug(msg): $msg"
 		echo "$msg" > /tmp/${ulid}.json
 		#sent to dv endpoint
-		curl -k -X POST -H "X-Dataverse-key: ${DVAPIKEY}" -H 'Content-Type: application/json' -H 'Accept: application/json' -d@/tmp/${ulid}.json https://$DVHOSTINT/api/datasets/dataCaptureModule/checksumValidation
+		r=`curl -k -X POST -H "X-Dataverse-key: ${DVAPIKEY}" -H 'Content-Type: application/json' -H 'Accept: application/json' -d@/tmp/${ulid}.json https://$DVHOSTINT/api/datasets/dataCaptureModule/checksumValidation`
+		echo "debug(checksum failed curl):"
+		echo $r
 		#TODO - cleanup /tmp once done testing
 	else
 		# handle checksum success
@@ -67,7 +69,9 @@ do
 			#TODO - send to dv endpoint 
 			echo "$msg" > /tmp/${ulid}.json
 			#sent to dv endpoint
-			curl -k -X POST -H "X-Dataverse-key: ${DVAPIKEY}" -H 'Content-Type: application/json' -H 'Accept: application/json' -d@/tmp/${ulid}.json https://$DVHOSTINT/api/datasets/dataCaptureModule/checksumValidation
+			r=`curl -k -X POST -H "X-Dataverse-key: ${DVAPIKEY}" -H 'Content-Type: application/json' -H 'Accept: application/json' -d@/tmp/${ulid}.json https://$DVHOSTINT/api/datasets/dataCaptureModule/checksumValidation`
+			echo "debug(validation passed curl):"
+			echo $r
 			#TODO - cleanup /tmp once done testing
 		else
 			echo "handle error - duplicate upload id $ulid"
