@@ -5,3 +5,6 @@
 FRONTEND_IP : "10.0.10.173"
 
 DCM_PATH : "/usr/local/dcm"
+
+DCM_VIRTUALENV : "/opt/local/virtualenv/dcm"
+
