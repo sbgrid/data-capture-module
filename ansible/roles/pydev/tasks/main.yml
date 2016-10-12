@@ -1,0 +1,19 @@
+# ubuntu 1604
+- name: dependencies-u1604
+  when: (ansible_distribution == "Ubuntu")
+  apt: name={{ item }} state=present update_cache=true
+  with_items:
+   - python-dev
+   - python-pip
+   - pylint
+   - virtualenv
+
+# centos6
+- name: dependencies-c6
+  when: (ansible_distribution == "CentOS")
+  yum: name={{ item }} state=present 
+  with_items:
+   - python-devel
+   - python-pip
+   - pylint
+   - python-virtualenv
