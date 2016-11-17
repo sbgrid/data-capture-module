@@ -1,7 +1,0 @@
----
-- name: "usg cron"
-  cron: name='usg cron' job='{{ DCM_PATH }}/gen/usg-wrap.bash >> /var/log/usg.log' minute='*/1' 
-
-- name: "scan cron"
-  cron: name='scan cron' job='{{ DCM_PATH }}/scn/post_upload.bash >> /var/log/post_upload.log' minute='*/1' 
-
