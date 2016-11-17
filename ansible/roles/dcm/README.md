@@ -4,3 +4,5 @@ This host will recieve uploads by rsync over ssh (user running a generated scrip
 
 For the moment, recieve requests from frontend here as well (POST requests of json to http://$HOSTNAME/ur.py).
 
+System configuration designed for CentOS 6.
+
