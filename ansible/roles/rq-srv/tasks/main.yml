@@ -1,0 +1,10 @@
+# duplicate of requirements.txt; but more robust this way
+- name: install rq
+  pip: name=rq state=present
+
+- name: rq init.d script
+  copy: src=etc/init.d/rq dest=/etc/init.d/rq mode=0755
+
+#- name: start rq service
+#  service: name=rq state=started enabled=yes
+
