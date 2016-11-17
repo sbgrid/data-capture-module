@@ -14,6 +14,7 @@
    - nfs-utils
    - git
    - jq
+   - python-pip
 
 - name: "sshd config"
   copy: src=etc/ssh/sshd_config dest=/etc/ssh/sshd_config force=yes backup=yes owner=root group=root mode=0600
@@ -55,4 +56,7 @@
   copy: src=root/scripts/{{ item }} dest=/root/scripts/{{ item }} 
   with_items:
    - dcm-test01.sh
+
+- name: "python dependencies"
+  pip: requirements={{ DCM_PATH }}/requirements.txt
 
