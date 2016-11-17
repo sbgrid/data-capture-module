@@ -1,11 +1,14 @@
 #!/bin/bash
 
+# chkconfig: 2345 90 60
+# description: rq worker script (single worker process)
+
 # prototype rq worker init script (single worker)
 # works on cent6
 
 DAEMON=rq_worker
-DAEMON_PATH=/vagrant/src
-VIRTUALENV=/home/vagrant/rqt
+DAEMON_PATH=/vagrant/
+VIRTUALENV=
 LOGFILE=/var/log/${DAEMON}.log
 PIDFILE=/var/run/${DAEMON}.pid
 
@@ -13,7 +16,9 @@ case "$1" in
 start)
 	printf "%-50s" "starting $DAEMON..."
 	cd $DAEMON_PATH
-	source $VIRTUALENV/bin/activate
+	if [ ! -z "$VIRTUALENV" ]; then
+		source $VIRTUALENV/bin/activate
+	fi
 	rq worker normal --pid $PIDFILE > ${LOGFILE} 2>&1 &
 ;;
 status)

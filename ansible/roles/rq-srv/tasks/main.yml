@@ -5,6 +5,6 @@
 - name: rq init.d script
   copy: src=etc/init.d/rq dest=/etc/init.d/rq mode=0755
 
-#- name: start rq service
-#  service: name=rq state=started enabled=yes
+- name: start rq service
+  service: name=rq state=started enabled=yes
 
