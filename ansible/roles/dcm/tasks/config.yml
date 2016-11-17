@@ -53,7 +53,7 @@
   file: path=/root/scripts state=directory 
 
 - name: "test scripts"
-  copy: src=root/scripts/{{ item }} dest=/root/scripts/{{ item }} 
+  copy: src=root/scripts/{{ item }} dest=/root/scripts/{{ item }} mode=0755
   with_items:
    - dcm-test01.sh
 
