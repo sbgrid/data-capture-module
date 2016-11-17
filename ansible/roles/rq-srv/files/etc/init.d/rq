@@ -7,7 +7,7 @@
 # works on cent6
 
 DAEMON=rq_worker
-DAEMON_PATH=/vagrant/
+DAEMON_PATH=/usr/local/dcm/gen/
 VIRTUALENV=
 LOGFILE=/var/log/${DAEMON}.log
 PIDFILE=/var/run/${DAEMON}.pid
