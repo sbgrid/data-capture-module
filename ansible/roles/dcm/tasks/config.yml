@@ -43,20 +43,14 @@
 - name: 'scp symlink'
   file: src=/usr/bin/scp dest=/bin/scp state=link
 
-- name: "rpc start"
-  service: name=rpcbind state=started
-
 - name: "environmental variable for upload host"
   template: src=root/.bashrc.j2 dest=/root/.bashrc owner=root group=root force=yes backup=yes
 
 - name: "test script directory"
   file: path=/root/scripts state=directory 
 
-- name: "test scripts"
+- name: "DCM test scripts"
   copy: src=root/scripts/{{ item }} dest=/root/scripts/{{ item }} mode=0755
   with_items:
    - dcm-test01.sh
-
-- name: "python dependencies"
-  pip: requirements={{ DCM_PATH }}/requirements.txt
 

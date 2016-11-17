@@ -13,3 +13,10 @@ DCM_GROUP: sbgriddb
 # if necessary for NFS
 DCM_UID: 1000
 DCM_GID: 1000
+
+# base directory for recieving uploads
+UPLOAD_DIRECTORY: /deposit
+
+# post-upload directory
+HOLD_DIRECTORY: /nfs/biodv/stage
+

@@ -1,6 +1,5 @@
 ---
 #
-# pulling code from github
 - name: "git-install"
   yum: name=git state=present
 
@@ -17,3 +16,5 @@
   tags: 
    - code-update
 
+- name: "install python dependencies"
+  pip: requirements={{ DCM_PATH }}/requirements.txt

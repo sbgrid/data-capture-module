@@ -3,12 +3,12 @@
 
 # groups
 - name: "dcm group"
-  group: name=sbgdb state=present gid=1000
+  group: name={{ DCM_USER }} state=present gid={{ DCM_GID }}
 - name: "dcm user"
-  user: name=sbgdb shell=/bin/bash system=yes group=sbgdb uid=1000
+  user: name={{ DCM_USER }} shell=/bin/bash system=yes group={{ DCM_GROUP }} uid={{ DCM_UID }}
 
 # group for upload users
-- name: "upload group"
+- name: "upload (depositor) group"
   group: name=upload state=present 
 
 

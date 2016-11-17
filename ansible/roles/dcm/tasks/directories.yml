@@ -1,18 +1,17 @@
 ---
-#
 
+# directories for recieving uploads, and moving to repository accessable storage
 
-# directories
 - name: "data deposition directory existance"
-  file: path="/deposit" state=directory
+  file: path="/{{ UPLOAD_DIRECTORY }}" state=directory
 
 # lighttpd user created by package install; UID/GID does not need to sync
 - name: "deposition request directory"
-  file: path='/deposit/requests' state=directory owner=lighttpd group=lighttpd
+  file: path='/{{ UPLOAD_DIRECTORY }}/requests' state=directory owner=lighttpd group=lighttpd
 
 - name: "deposition processed directory"
-  file: path='/deposit/processed' state=directory
+  file: path='/{{ UPLOAD_DIRECTORY }}/processed' state=directory
 
 - name: 'location for request files corresponding to uploaded datasets'
-  file: path='/nfs/biodv/stage' owner='sbgdb' group='sbgdb' state=directory
+  file: path='{{ HOLD_DIRECTORY }}' owner='{{ DCM_USER }}' group='{{ DCM_GROUP }}' state=directory
 

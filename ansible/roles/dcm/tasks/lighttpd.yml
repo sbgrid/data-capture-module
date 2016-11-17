@@ -14,7 +14,6 @@
   copy: src=etc/lighttpd/{{ item }} dest=/etc/lighttpd force=yes backup=yes
   with_items:
    - modules.conf
-#   - lighttpd.conf
   notify:
    - httpd-restart
 
@@ -28,6 +27,5 @@
 
 - name: 'lighttpd script cache directory'
   file: state=directory path='/deposit/gen' owner=lighttpd group=lighttpd 
-#- name: "remove default pages"
-#  file: path=/var/www/lighttpd state=absent
+
 
