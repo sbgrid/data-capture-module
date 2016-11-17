@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 
+'''
+API endpoint for script requests
+'''
+
 import cgi
 import json
 import os.path
