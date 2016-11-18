@@ -2,6 +2,9 @@
 # tested with:
 # - Flask-0.11-py2.py3-none-any.whl on Python 2.7 (OS X 10.10)
 # - python-flask-0.9-7.el6.noarch on Python 2.6 (CentOS 6)
+
+# this is an integration stub
+
 from flask import Flask, Response
 import json
 app = Flask(__name__)
