@@ -101,7 +101,7 @@ def generated_already( uid ):
     (e,_) = commands.getstatusoutput('id %s' % uid )
     return 0 == e
 
-def proc( req_file, verbose = True ):
+def proc( req_file, verbose = True, done_dir = '/deposit/processed' ):
     inp = open( req_file, 'r' )
     x = json.load( inp )
     inp.close()
@@ -110,12 +110,16 @@ def proc( req_file, verbose = True ):
         # nothing new to do, bail out of this one
         if verbose:
             print('request uid %s already processed' % req_file )
+        os.remove( req_file )
         return None
     if verbose:
         print('request uid = %s ' % uid )
 
     create_temporary_account( uid )
     fname = generate_upload_script( uid )
+    # rename request file (moved here due to cron -> rq)
+    rfn = '%s.json' % uid
+    os.rename( req_file, os.path.join( done_dir, rfn ) )
     (e,o) = commands.getstatusoutput('curl -k -X POST -H "Content-Type: application/text" -H "Accept: application/json" -H "X-Dataverse-key: $DVAPIKEY" --data-binary @%s https://$DVHOSTINT/api/datasets/%s/dataCaptureModule/rsync' % ( fname, x['datasetId'] ) )
     if 0 != e :
         print('problem sending script to dataverse for %s; it\'ll have to ask for it' % uid)
@@ -149,12 +153,14 @@ def proc_requests( req_dir = '/deposit/requests', done_dir = '/deposit/processed
             ulid = proc( req )
             if None != ulid:
                 # generated new request
-                fn = '%s.json' % ulid
-                os.rename( req, os.path.join( done_dir, fn ) )
+                #fn = '%s.json' % ulid
+                #os.rename( req, os.path.join( done_dir, fn ) )
+                # now handled in proc
+                pass
             else:
                 # duplicate request, get rid of the request file
                 print('request file %s contains info already processed, deleting' % req )
-                os.remove( req )
+                #os.remove( req ) # remove in proc
         except Exception, e : #probably bad practice; should catche more specific exceptions
             print('error processing request file %s' % req )
             print(e)
