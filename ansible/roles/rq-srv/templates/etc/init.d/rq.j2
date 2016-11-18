@@ -8,7 +8,7 @@
 
 DAEMON=rq_worker
 DAEMON_PATH={{ DCM_PATH }}/gen/
-UPLOADHOST={{ UPLOADHOST }}
+export UPLOADHOST={{ UPLOADHOST }}
 VIRTUALENV=
 LOGFILE=/var/log/${DAEMON}.log
 PIDFILE=/var/run/${DAEMON}.pid
