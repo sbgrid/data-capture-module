@@ -7,7 +7,8 @@
 # works on cent6
 
 DAEMON=rq_worker
-DAEMON_PATH=/usr/local/dcm/gen/
+DAEMON_PATH={{ DCM_PATH }}/gen/
+UPLOADHOST={{ UPLOADHOST }}
 VIRTUALENV=
 LOGFILE=/var/log/${DAEMON}.log
 PIDFILE=/var/run/${DAEMON}.pid
