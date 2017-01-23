@@ -64,9 +64,11 @@ do
 			rm -rf ${DEPOSIT}/${ulid}/${ulid}
 			chown -R $DSETUSER:$DSETUSER ${HOLD}/${ulid}
 			echo "data moved"
-			msg=`cat $DEPOSIT/processed/${ulid}.json | jq ' . + {status:"validation passed"}'`
+			# send space used to dv
+			sz=`du -sb ${HOLD}/${ulid}`
+			msg=`cat $DEPOSIT/processed/${ulid}.json | jq ' . + {status:"validation passed",size_bytes:$sz}'`
 			echo "debug(msg): $msg"
-			#TODO - send to dv endpoint 
+			# send to dv endpoint 
 			echo "$msg" > /tmp/${ulid}.json
 			#sent to dv endpoint
 			r=`curl -k -X POST -H "X-Dataverse-key: ${DVAPIKEY}" -H 'Content-Type: application/json' -H 'Accept: application/json' -d@/tmp/${ulid}.json https://$DVHOSTINT/api/datasets/dataCaptureModule/checksumValidation`
