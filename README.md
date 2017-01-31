@@ -9,7 +9,7 @@ The design is intented to be agnostic to transfer protocol, and currently implem
 Significant code cleanup (removal of hard-coded information) remains to be done.
 
 ## system configuration
-see [doc/install.md](installation instructions).
+see [doc/installation.md](installation instructions).
 
 ### stubs to be made configurable
 - username for upload script generation
