@@ -9,24 +9,17 @@ The design is intented to be agnostic to transfer protocol, and currently implem
 Significant code cleanup (removal of hard-coded information) remains to be done.
 
 ## system configuration
-System configuration and software setup is handled through ansible.
-There are several roles currently in use, and in some cases configuration settings need to be setup prior to running ansible (or `vagrant up` / `docker create`).
-These should be in the `vars/` directory for the respective roles (although the process of making sure this is set up is ongoing).
-These roles assume CentOS 6, and may work on other rpm based systems - extending to other distributions should not be problematic if it becomes necessary.
-
-These ansible scripts explicity *DO NOT* handle integration with file servers or other storage layers.
+see [doc/install.md](installation instructions).
 
 ### stubs to be made configurable
 - username for upload script generation
 - filesystem paths
 
 ### TODO
+- revisit the TODO list (and move into github issues)
 - clean up sshd config
 - improve docs 
 - lighttpd paths 
-- revisit the TODO list
-
-## code
 
 ### general organization
 - `api/` : external interface that repository software will call
