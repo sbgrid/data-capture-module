@@ -1,6 +1,7 @@
-The DCM exposes port 22 to end users, and 80/443 to the repository (designated IPv4 address).
+The DCM exposes port 22 to end users, and 80 to the repository *only* (designated IPv4 address).
 Other ports should not be exposed to outside systems.
 
 redis, and rq need to be checked (config and nmap).
 ssh can be restricted to certificate only.
+
 
