@@ -1,4 +1,6 @@
-FROM cent6v-base # Standard CentOS 6 base image, pick your favorite
+# this is highly experimental, and will almost certainly not work on your system without customization
+
+FROM cent6v-base # Standard CentOS 6 base image (image intentionally not in repos), pick your favorite
 
 RUN yum install -y ansible
 ADD . /tmp/dcm
