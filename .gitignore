@@ -2,3 +2,5 @@
 *.pyc
 .vagrant
 secrets.yml
+.coverage
+
