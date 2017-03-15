@@ -4,10 +4,29 @@ The DCM is designed to work on linux systems, and should work on most unixes.
 These instructions (*currently*) assume the system is being configured with ansible, and are configuring a CentOS 6 system which isn't being used for other purposes.
 The docker image is currently experimental.
 
-## Configuration
- - using `secrets.yml.template` as a template to create `secrets.yml`
- - configure the hostlist as appropriate
- - run the playbook
+## Quickstart
+- using `secrets.yml.template` as a template to create `secrets.yml`
+- configure the hostlist as appropriate
+- run the playbook: `cd ansible; ansible-playbook -i dev.hostlist dcm.yml`
 
-**TODO** install docs still need signficant improvement.
+## Dependencies
+Highlights from `dcm/tasks/config.yml` "package install" entry
+- `lighttpd` : external interface for Dataverse to communicate with the DCM
+- `sshd`, `rsync` : for keypair generation and recieving uploads
+- `perl-Digest-SHA` : for checksum verification
+- `rssh` : default shell for upload accounts to prevent interactive login
+
+## Configuration options
+### `dcm/vars/main.yml`
+- `FRONTEND_IP` : IP address or hostname of system allowed to send requests (for upload scripts/tokens) to the DCM; this is handled by refusing `lighttpd` connections from other hosts.
+- `DCM_PATH` : local filesystem path for the DCM software to be installed to.  Installation is currently handled by cloning the repository, although there isn't a strict requirement for it to be handled that way.
+- `DCM_USER`, `DCM_GROUP` : local username and group for the DCM to run under
+- `DCM_UID`, `DCM_GID` : for NFS compatability, UID,GID of DCM user
+- `UPLOAD_DIRECTORY` : base directory for recieving datasets, and transfer account home directories
+- `HOLD_DIRECTORY` : base directory for where datasets are transfered to after checksum validation
+
+### `dcm/vars/secrets.yml`
+- `UPLOADHOST` : IP address or hostname users will use for transferring datasets to
+- `DVAPIKEY` : Dataverse API key with appropriate permissions the DCM
+- `DVHOSTINT` : IP address or hostname for Dataverse instance the DCM will be sending messags to.  This will frequently be the same as `FRONTEND_IP`, but there is no requirement for the two to be the same.
 
