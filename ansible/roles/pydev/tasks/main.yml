@@ -17,5 +17,5 @@
   with_items:
    - python-devel
    - python-pip
-   - pylint
+#   - pylint
    - python-virtualenv
