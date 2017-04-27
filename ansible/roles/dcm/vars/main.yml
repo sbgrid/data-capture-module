@@ -2,13 +2,13 @@
 #
 
 # hosts allowed to send messages requesting an upload script
-FRONTEND_IP : "10.0.10.173"
+FRONTEND_IP : "dvapp"
 
 DCM_PATH : "/usr/local/dcm"
 
 # user/group for the system user running the DCM process, not end users transferring datasets
-DCM_USER: sbgriddb
-DCM_GROUP: sbgriddb
+DCM_USER: dcmu
+DCM_GROUP: dcmu
 
 # if necessary for NFS
 DCM_UID: 1000
@@ -18,5 +18,5 @@ DCM_GID: 1000
 UPLOAD_DIRECTORY: /deposit
 
 # post-upload directory
-HOLD_DIRECTORY: /nfs/biodv/stage
+HOLD_DIRECTORY: /hold
 
