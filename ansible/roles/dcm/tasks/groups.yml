@@ -3,12 +3,15 @@
 
 # groups
 - name: "dcm group"
+  tags: dcm
   group: name={{ DCM_USER }} state=present gid={{ DCM_GID }}
 - name: "dcm user"
+  tags: dcm
   user: name={{ DCM_USER }} shell=/bin/bash system=yes group={{ DCM_GROUP }} uid={{ DCM_UID }}
 
 # group for upload users
 - name: "upload (depositor) group"
+  tags: dcm
   group: name=upload state=present 
 
 

@@ -4,6 +4,7 @@
 # packages , repos and configs
 - name: "package install"
   yum: pkg={{ item }} state=present
+  tags: dcm
   with_items:
    - openssh-server
    - rsync
@@ -19,10 +20,12 @@
 - name: "sshd config"
   copy: src=etc/ssh/sshd_config dest=/etc/ssh/sshd_config force=yes backup=yes owner=root group=root mode=0600
   notify:
+  tags: dcm
    - sshd-restart
 
 - name: "repoforge setup"
   copy: src=etc/yum.repos.d/{{ item }} dest=/etc/yum.repos.d 
+  tags: dcm
   with_items:
    - mirrors-rpmforge
    - mirrors-rpmforge-extras
@@ -30,26 +33,33 @@
    - rpmforge.repo
 
 - name: 'rssh install'
+  tags: dcm
   yum: pkg=rssh state=present disable_gpg_check=yes
 
 - name: "rssh config"
+  tags: dcm
   copy: src=etc/rssh.conf dest=/etc/rssh.conf force=yes backup=yes owner=root group=root 
 
 # rssh wants rsync in /bin ; can't find it in /usr/bin and doesn't look adjustable in /etc/rssh.conf
 - name: 'rsync symlink'
+  tags: dcm
   file: src=/usr/bin/rsync dest=/bin/rsync state=link
 
 # also wants /bin/scp , not /usr/bin/scp
 - name: 'scp symlink'
+  tags: dcm
   file: src=/usr/bin/scp dest=/bin/scp state=link
 
 - name: "environmental variable for upload host"
+  tags: dcm
   template: src=root/.bashrc.j2 dest=/root/.bashrc owner=root group=root force=yes backup=yes
 
 - name: "test script directory"
+  tags: dcm
   file: path=/root/scripts state=directory 
 
 - name: "DCM test scripts"
+  tags: dcm
   copy: src=root/scripts/{{ item }} dest=/root/scripts/{{ item }} mode=0755
   with_items:
    - dcm-test01.sh

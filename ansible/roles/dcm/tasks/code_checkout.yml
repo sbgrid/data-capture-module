@@ -1,12 +1,15 @@
 ---
 #
 - name: "git-install"
+  tags: dcm
   yum: name=git state=present
 
 - name: "ssh-git: github host key fingerprint "
+  tags: dcm
   copy: src=etc/ssh/ssh_known_hosts dest=/etc/ssh/ssh_known_hosts force=yes backup=yes
 
 - name: "source directory existance"
+  tags: dcm
   file: path="{{ DCM_PATH }}" state=directory
 
 # ssh-agent does handle keys through ansible
@@ -15,6 +18,8 @@
   git: repo=git://github.com/sbgrid/data-capture-module.git dest={{ DCM_PATH }}
   tags: 
    - code-update
+   - dcm
 
 - name: "install python dependencies"
   pip: requirements={{ DCM_PATH }}/requirements.txt
+  tags: dcm

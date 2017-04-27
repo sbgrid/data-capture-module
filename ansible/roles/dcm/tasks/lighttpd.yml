@@ -2,16 +2,19 @@
 #
 - name: "epel install"
   yum: pkg={{ item }} state=present
+  tags: dcm
   with_items:
    - epel-release
 
 - name: "package install"
   yum: pkg={{ item }} state=present
+  tags: dcm
   with_items:
    - lighttpd
 
 - name: "lighttpd module config"
   copy: src=etc/lighttpd/{{ item }} dest=/etc/lighttpd force=yes backup=yes
+  tags: dcm
   with_items:
    - modules.conf
   notify:
@@ -20,12 +23,16 @@
 - name: "lighttpd config"
   template: src=etc/lighttpd/lighttpd.conf.j2 dest=/etc/lighttpd/lighttpd.conf force=yes backup=yes 
   notify: httpd-restart
-  tags: web
+  tags: 
+   - web 
+   - dcm
 
 - name: "lighttpd service"
   service: name=lighttpd state=started enabled=yes
+  tags: dcm
 
 - name: 'lighttpd script cache directory'
   file: state=directory path='/deposit/gen' owner=lighttpd group=lighttpd 
+  tags: dcm
 
 

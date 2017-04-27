@@ -3,15 +3,19 @@
 # directories for recieving uploads, and moving to repository accessable storage
 
 - name: "data deposition directory existance"
+  tags: dcm
   file: path="/{{ UPLOAD_DIRECTORY }}" state=directory
 
 # lighttpd user created by package install; UID/GID does not need to sync
 - name: "deposition request directory"
+  tags: dcm
   file: path='/{{ UPLOAD_DIRECTORY }}/requests' state=directory owner=lighttpd group=lighttpd
 
 - name: "deposition processed directory"
+  tags: dcm
   file: path='/{{ UPLOAD_DIRECTORY }}/processed' state=directory
 
 - name: 'location for request files corresponding to uploaded datasets'
+  tags: dcm
   file: path='{{ HOLD_DIRECTORY }}' owner='{{ DCM_USER }}' group='{{ DCM_GROUP }}' state=directory
 
