@@ -1,10 +1,13 @@
 # duplicate of requirements.txt; but more robust this way
 - name: install rq
+  tags: dcm
   pip: name=rq state=present
 
 - name: rq init.d script
+  tags: dcm
   template: src=etc/init.d/rq.j2 dest=/etc/init.d/rq mode=0755 
 
 - name: start rq service
+  tags: dcm
   service: name=rq state=started enabled=yes
 

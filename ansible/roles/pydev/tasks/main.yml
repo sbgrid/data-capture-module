@@ -1,5 +1,6 @@
 # ubuntu 1604
 - name: dependencies-u1604
+  tags: dcm
   when: (ansible_distribution == "Ubuntu")
   apt: name={{ item }} state=present update_cache=true
   with_items:
@@ -10,6 +11,7 @@
 
 # centos6
 - name: dependencies-c6
+  tags: dcm
   when: (ansible_distribution == "CentOS")
   yum: name={{ item }} state=present 
   with_items:
