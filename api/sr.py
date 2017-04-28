@@ -8,8 +8,8 @@ import cgi
 import json
 import os.path
 
+#TODO - read from environmental variable
 UPLOAD_ROOT='/deposit/'
-HOLD_ROOT = '/nfs/biodv/'
 
 def proc():
     form = cgi.FieldStorage()

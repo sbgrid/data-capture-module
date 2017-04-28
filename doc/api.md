@@ -1,6 +1,6 @@
 # API docs
 
-**TENTATIVE** API docs
+Still tentative (but less so now) API docs
 
 ## endpoints
 ### generate transfer script
@@ -28,6 +28,7 @@ parameters:
 
 response: 404 code and empty response means the script isn't ready yet; 200 and json dictionary with additional key `script` containing the generated upload script, and other keys sent to `ur.py`
 
+Also note that these paramters are not JSON encoded; straight form parameters (see `dcm-test02.sh` in the ansible role for a curl example).
 
 ### post-upload
 checksum validation success or failure.
