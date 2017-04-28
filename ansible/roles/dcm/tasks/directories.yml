@@ -15,7 +15,11 @@
   tags: dcm
   file: path='/{{ UPLOAD_DIRECTORY }}/processed' state=directory
 
+- name: 'location for uploaded datasets'
+  tags: dcm
+  file: path='{{ HOLD_DIRECTORY }}/' owner='{{ DCM_USER }}' group='{{ DCM_GROUP }}' state=directory
+
 - name: 'location for request files corresponding to uploaded datasets'
   tags: dcm
-  file: path='{{ HOLD_DIRECTORY }}' owner='{{ DCM_USER }}' group='{{ DCM_GROUP }}' state=directory
+  file: path='{{ HOLD_DIRECTORY }}/stage' owner='{{ DCM_USER }}' group='{{ DCM_GROUP }}' state=directory
 
