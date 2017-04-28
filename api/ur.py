@@ -5,6 +5,7 @@ upload request handler
 
 '''
 
+#TODO - pull from environmental variable
 DATADIR='/deposit/requests/'
 
 import sys
