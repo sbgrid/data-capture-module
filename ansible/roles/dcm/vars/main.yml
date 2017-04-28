@@ -2,7 +2,8 @@
 #
 
 # hosts allowed to send messages requesting an upload script
-FRONTEND_IP : "dvapp"
+# note that this is used in lighttpd conf for IP access, so hostname won't work here
+FRONTEND_IP : "192.168.2.2"
 
 DCM_PATH : "/usr/local/dcm"
 
