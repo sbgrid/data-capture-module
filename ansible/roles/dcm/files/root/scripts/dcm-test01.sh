@@ -19,5 +19,5 @@ else
 fi
 
 
-curl -H "Content-Type: application/json" -X POST -d "{\"datasetId\":\"${$dset}\", \"userId\":\"${user}\",\"datasetIdentifier\":\"${1}\"}" http://127.0.0.1/ur.py
+curl -H "Content-Type: application/json" -X POST -d "{\"datasetId\":\"${dset}\", \"userId\":\"${user}\",\"datasetIdentifier\":\"${1}\"}" http://127.0.0.1/ur.py
 
