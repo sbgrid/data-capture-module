@@ -10,12 +10,14 @@ if [ ! -z "$DVAPIKEY" ]; then
 	. $HOME/.bashrc
 fi
 
+#TODO - make configurable
 DEPOSIT=/deposit
-#HOLD=/hold
-HOLD=/nfs/biodv/
+HOLD=/hold
+#HOLD=/nfs/biodv/
 SRC=/usr/local/dcm/
 
 # user to own uploaded datasets; change to production user after testing
+#TODO - make configurable
 DSETUSER=sbgdb
 
 if [ -e $LOCKFILE ]; then
@@ -44,7 +46,7 @@ do
 		msg=`cat $DEPOSIT/processed/${ulid}.json | jq ' . + {status:"validation failed"}'`
 		echo "debug(msg): $msg"
 		echo "$msg" > /tmp/${ulid}.json
-		#sent to dv endpoint
+		#sent to dv endpoint (only if API key set; log to stdout otherwise)
 		r=`curl -k -X POST -H "X-Dataverse-key: ${DVAPIKEY}" -H 'Content-Type: application/json' -H 'Accept: application/json' -d@/tmp/${ulid}.json https://$DVHOSTINT/api/datasets/dataCaptureModule/checksumValidation`
 		echo "debug(checksum failed curl):"
 		echo $r
@@ -70,7 +72,7 @@ do
 			echo "debug(msg): $msg"
 			# send to dv endpoint 
 			echo "$msg" > /tmp/${ulid}.json
-			#sent to dv endpoint
+			#sent to dv endpoint (only if API key set; log to stdout otherwise)
 			r=`curl -k -X POST -H "X-Dataverse-key: ${DVAPIKEY}" -H 'Content-Type: application/json' -H 'Accept: application/json' -d@/tmp/${ulid}.json https://$DVHOSTINT/api/datasets/dataCaptureModule/checksumValidation`
 			echo "debug(validation passed curl):"
 			echo $r
