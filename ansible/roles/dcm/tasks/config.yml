@@ -63,4 +63,5 @@
   copy: src=root/scripts/{{ item }} dest=/root/scripts/{{ item }} mode=0755
   with_items:
    - dcm-test01.sh
+   - dcm-test02.sh
 

@@ -2,7 +2,9 @@
 
 # test script for DCM
 
-# hardcoding localhost, because that's what it's testing
+if [ -z "${DCM_HOST}" ]; then
+	DCM_HOST=localhost
+fi
 
 if [ -z "$1" ]; then
 	echo "format is: dcm-test01.sh [test dataset id] [test user id]"
@@ -18,6 +20,5 @@ else
 	user=$2
 fi
 
-
-curl -H "Content-Type: application/json" -X POST -d "{\"datasetId\":\"${dset}\", \"userId\":\"${user}\",\"datasetIdentifier\":\"${1}\"}" http://127.0.0.1/ur.py
+curl -H "Content-Type: application/json" -X POST -d "{\"datasetId\":\"${dset}\", \"userId\":\"${user}\",\"datasetIdentifier\":\"${1}\"}" http://${DCM_HOST}/ur.py
 

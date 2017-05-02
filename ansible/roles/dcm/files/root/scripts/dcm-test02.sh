@@ -2,7 +2,16 @@
 
 # test script for retrieving upload script (if present)
 
-dset=3
+if [ -z "${DCM_HOST}" ]; then
+	DCM_HOST=localhost
+fi
 
-curl -X POST -d "datasetIdentifier=$dset" http://127.0.0.1/sr.py
+dset=$1
+
+if [ -z "${dset}" ]; then
+	echo "format is: dcm-test02.sh [dataset]"
+	exit 1
+fi
+
+curl -X POST -d "datasetIdentifier=$dset" http://${DCM_HOST}/sr.py
 
