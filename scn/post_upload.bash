@@ -13,7 +13,7 @@ fi
 #TODO - make configurable
 DEPOSIT=/deposit
 HOLD=/hold
-#HOLD=/nfs/biodv/
+
 SRC=/usr/local/dcm/
 
 # user to own uploaded datasets; change to production user after testing
@@ -47,9 +47,9 @@ do
 		echo "debug(msg): $msg"
 		echo "$msg" > /tmp/${ulid}.json
 		#sent to dv endpoint (only if API key set; log to stdout otherwise)
-		r=`curl -k -X POST -H "X-Dataverse-key: ${DVAPIKEY}" -H 'Content-Type: application/json' -H 'Accept: application/json' -d@/tmp/${ulid}.json https://$DVHOSTINT/api/datasets/dataCaptureModule/checksumValidation`
-		echo "debug(checksum failed curl):"
-		echo $r
+		#r=`curl -k -X POST -H "X-Dataverse-key: ${DVAPIKEY}" -H 'Content-Type: application/json' -H 'Accept: application/json' -d@/tmp/${ulid}.json https://$DVHOSTINT/api/datasets/dataCaptureModule/checksumValidation`
+		#echo "debug(checksum failed curl):"
+		#echo $r
 		#TODO - cleanup /tmp once done testing
 	else
 		# handle checksum success
@@ -57,25 +57,28 @@ do
 
 		#move to HOLD location
 		if [ ! -d ${HOLD}/${ulid} ]; then
-			cp -a ${DEPOSIT}/${ulid}/${ulid} ${HOLD}/
+			#change to subdirectory to match batch-import code changes
+			mkdir -p ${HOLD}/${ulid}
+			cp -a ${DEPOSIT}/${ulid}/${ulid} ${HOLD}/${ulid}/
 			err=$?
 			if (( $err != 0 )) ; then
 				echo "dcm: file move $ulid" 
 				break
 			fi
 			rm -rf ${DEPOSIT}/${ulid}/${ulid}
-			chown -R $DSETUSER:$DSETUSER ${HOLD}/${ulid}
+			#chown -R $DSETUSER:$DSETUSER ${HOLD}/${ulid}
 			echo "data moved"
 			# send space used to dv
-			sz=`du -sb ${HOLD}/${ulid}`
-			msg=`cat $DEPOSIT/processed/${ulid}.json | jq ' . + {status:"validation passed",size_bytes:$sz}'`
-			echo "debug(msg): $msg"
+			sz=`du -sb ${HOLD}/${ulid}` #FIXME - problems with $sz in message
+			#msg=`cat $DEPOSIT/processed/${ulid}.json | jq ' . + {status:"validation passed",size_bytes:$sz}'`
+			#echo "debug(msg): $msg"
 			# send to dv endpoint 
 			echo "$msg" > /tmp/${ulid}.json
+			echo "dataset $ulid : space $sz : subdirectory ${ulid}"
 			#sent to dv endpoint (only if API key set; log to stdout otherwise)
-			r=`curl -k -X POST -H "X-Dataverse-key: ${DVAPIKEY}" -H 'Content-Type: application/json' -H 'Accept: application/json' -d@/tmp/${ulid}.json https://$DVHOSTINT/api/datasets/dataCaptureModule/checksumValidation`
-			echo "debug(validation passed curl):"
-			echo $r
+			#r=`curl -k -X POST -H "X-Dataverse-key: ${DVAPIKEY}" -H 'Content-Type: application/json' -H 'Accept: application/json' -d@/tmp/${ulid}.json https://$DVHOSTINT/api/datasets/dataCaptureModule/checksumValidation`
+			#echo "debug(validation passed curl):"
+			#echo $r
 			#TODO - cleanup /tmp once done testing
 		else
 			echo "handle error - duplicate upload id $ulid"
