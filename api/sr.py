@@ -36,7 +36,7 @@ def proc():
         req = json.load( inp )
 
     # "validate" request file
-    if int(req['datasetIdentifier']) != (ulid):
+    if int(req['datasetIdentifier']) != int(ulid):
         # should never happen - defensive programming, or paranoia depending on perspective
         print('Status:500\n\n')
         sys.stderr.write('datasetIdentifier in request file does not match base filename\n')
