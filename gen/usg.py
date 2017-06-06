@@ -120,11 +120,11 @@ def proc( req_file, verbose = True, done_dir = '/deposit/processed' ):
     # rename request file (moved here due to cron -> rq)
     rfn = '%s.json' % uid
     os.rename( req_file, os.path.join( done_dir, rfn ) )
-    (e,o) = commands.getstatusoutput('curl -k -X POST -H "Content-Type: application/text" -H "Accept: application/json" -H "X-Dataverse-key: $DVAPIKEY" --data-binary @%s https://$DVHOSTINT/api/datasets/%s/dataCaptureModule/rsync' % ( fname, x['datasetId'] ) )
-    if 0 != e :
-        print('problem sending script to dataverse for %s; it\'ll have to ask for it' % uid)
-        print('output from failed command:')
-        print(o)
+    #(e,o) = commands.getstatusoutput('curl -k -X POST -H "Content-Type: application/text" -H "Accept: application/json" -H "X-Dataverse-key: $DVAPIKEY" --data-binary @%s https://$DVHOSTINT/api/datasets/%s/dataCaptureModule/rsync' % ( fname, x['datasetId'] ) )
+    #if 0 != e :
+    #    print('problem sending script to dataverse for %s; it\'ll have to ask for it' % uid)
+    #    print('output from failed command:')
+    #    print(o)
     return uid
 
 def test1():
