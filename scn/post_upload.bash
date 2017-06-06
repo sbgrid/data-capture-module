@@ -16,6 +16,11 @@ if [ -z "$DVHOST" ]; then # include protocol,host,port in this as well
 	exit 1
 fi
 
+if [ -z "${DOI_SHOULDER}" ]; then
+	echo "warning - using test DOI shoulder because one isn't configured"
+	DOI_SHOULDER="10.5072/FK2"
+fi
+
 #TODO - make configurable
 DEPOSIT=/deposit
 HOLD=/hold
@@ -74,8 +79,12 @@ do
 			
 			echo "data moved"
 			# send space used to dv
-			sz=`du -sb ${HOLD}/${datasetIdentifier}` 
-			echo "dataset $ulid : space $sz : subdirectory ${ulid}"
+			sz=`du -sb ${HOLD}/${datasetIdentifier} | awk '{print $1} '`
+			echo "dataset $ulid (but really ${datasetIdentifier}) : space $sz : subdirectory ${ulid}"
+			# tell DV to do batch import
+			dv_userId=`cat ${DEPOSIT}/processed/${ulid}.json | jq -r .userId`
+			curl -s -X POST -H "X-Dataverse-key: ${DVAPIKEY}" "${DVHOST}/api/batch/jobs/import/datasets/files/${DOI_SHOULDER}/${datasetIdentifier}?mode=MERGE&uploadFolder=trn&totalSize=${sz}&userId=${dv_userId}" 
+			
 		else
 			echo "handle error - duplicate upload id $ulid"
 			echo "problem moving data; bailing out"
