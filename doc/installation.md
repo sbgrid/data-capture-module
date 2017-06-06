@@ -27,6 +27,8 @@ Highlights from `dcm/tasks/config.yml` "package install" entry
 
 ### `dcm/vars/secrets.yml`
 - `UPLOADHOST` : IP address or hostname users will use for transferring datasets to
-- `DVAPIKEY` : Dataverse API key with appropriate permissions the DCM
-- `DVHOSTINT` : IP address or hostname for Dataverse instance the DCM will be sending messags to.  This will frequently be the same as `FRONTEND_IP`, but there is no requirement for the two to be the same.
+- `DVAPIKEY` : Dataverse API key with appropriate permissions the DCM.  Current assumption is that this is an admin key (aka - it's a system account, not a user account).
+- `DVHOSTINT` : IP address or hostname for Dataverse instance the DCM will be sending messags to.  This will frequently be the same as `FRONTEND_IP`, but there is no requirement for the two to be the same. *obscolete - use `DVHOST`*
+- `DVHOST` : protocol, host, and port (if necessary) for DCM to communicate with Datverse API endpoints.  Currently calls the batch-import APIs (`api/batch/jobs/import/datasets/files/$doi`) on validation success; will call other APIs on failure when those are implemented.
+
 
