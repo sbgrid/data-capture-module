@@ -4,6 +4,7 @@
 Vagrant.configure(2) do |config|
   # pick your favorite (or already downloaded) c6 box
   config.vm.box = "geerlingguy/centos6"
+  # 1.1.3 worked for PD
 
   config.vm.box_check_update = false
 
