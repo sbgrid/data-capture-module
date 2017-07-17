@@ -6,13 +6,12 @@ echo "post_upload starting at " `date`
 
 LOCKFILE=/var/run/post_upload.pid
 
-# convert these to warnings once things are sorted?
 if [ -z "$DVAPIKEY" ]; then
-	echo "error - need a dataverse API key configured until dataset.id vs dataset.identifier sets sorted"
+	echo "error - need a dataverse API key configured (DCM -> DV communications) "
 	exit 1
 fi
-if [ -z "$DVHOST" ]; then # include protocol,host,port in this as well
-	echo "error - need a dataverse API key configured until dataset.id vs dataset.identifier sets sorted"
+if [ -z "$DVHOST" ]; then # TODO include protocol,host,port in this as well
+	echo "error - need a dataverse API key configured (DCM -> DV communications)"
 	exit 1
 fi
 
@@ -62,7 +61,8 @@ do
 		echo "checksums verified"
 
 		#move to HOLD location
-		datasetIdentifier=`curl -s -X GET -H "X-Dataverse-key: ${DVAPIKEY}" ${DVHOST}/api/datasets/${ulid} | jq -r .data.identifier`
+		#datasetIdentifier=`curl -s -X GET -H "X-Dataverse-key: ${DVAPIKEY}" ${DVHOST}/api/datasets/${ulid} | jq -r .data.identifier`
+		datasetIdentifier=${ulid} # testing DV fix
 		echo "debug: datasetIdentifier = ${datasetIdentifier}"
 		#if [ ! -d ${HOLD}/${ulid} ]; then
 		if [ ! -d ${HOLD}/${datasetIdentifier} ]; then
