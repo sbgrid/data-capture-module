@@ -43,6 +43,7 @@ def proc():
         sys.stderr.write('datasetIdentifier in request file does not match base filename\n')
         return
     req['script'] = dat
+    #TODO - return 202 instead of 200
     print('Content-Type: application/json\n\n%s' % json.dumps( req ) )
 
 if __name__ == '__main__':
