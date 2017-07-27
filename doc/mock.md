@@ -6,10 +6,10 @@ This is a simple flask application, and only handles "happy path" of everything 
 ## Installation
 - `virtualenv ${whatever_youd_like_to_call_your_virtualenv_for_this}`
 - `source ${whatever_youd_like_to_call_your_virtualenv_for_this}`
-- `cd api; pip install -r requirements-mock.txt`
+- `cd $DCM_REPO_ROOT/api; pip install -r requirements-mock.txt`
 
 ## Running
-- `cd api` (if necessary)
+- `cd $DCM_REPO_ROOT/api` (if necessary)
 - `./dev_mock.sh` (for unix based systems)
 
 ## Testing
