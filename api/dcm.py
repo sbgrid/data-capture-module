@@ -25,12 +25,13 @@ def upload_request():
     '''
     request creation of an upload script.
     '''
-    print('debug: recieved request for creation of transfer script for dataset "%s" for user "%s"' % ( request.json['datasetIdentifier'], request.json['userId'] ) )
+    xdat = json.loads( request.data )
+    print('debug: recieved request for creation of transfer script for dataset "%s" for user "%s"' % ( xdat['datasetIdentifier'], xdat['userId'] ) )
     data = {}
     data['status'] = 'OK'
     resp = Response(response=json.dumps(data),
-        # 202 "accepted"
-        status=202, \
+        # 202 "accepted" would be more appropriate, but non-200 breaks things
+        status=200, \
         mimetype="application/json")
     return(resp)
 
@@ -44,7 +45,7 @@ def script_request():
     print('debug: recieved script request for dataset "%s" ' % dset_id)
     with open('rsync.sh', 'r') as myfile:
         script=myfile.read()
-    data = { 'script' : script }
+    data = { 'script' : script ,"datasetIdentifier":dset_id ,"userId":42 }
     resp = Response(response=json.dumps(data),
         status=200, \
         mimetype="application/json")
