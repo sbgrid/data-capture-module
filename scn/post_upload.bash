@@ -2,7 +2,7 @@
 
 # post upload scanning (checksums and data movement)
 
-echo "post_upload starting at " `date` 
+echo "post_upload starting at " `date`
 
 LOCKFILE=/var/run/post_upload.pid
 
@@ -10,8 +10,8 @@ if [ -z "$DVAPIKEY" ]; then
 	echo "error - need a dataverse API key configured (DCM -> DV communications) "
 	exit 1
 fi
-if [ -z "$DVHOST" ]; then # TODO include protocol,host,port in this as well
-	echo "error - need a dataverse API key configured (DCM -> DV communications)"
+if [ -z "$DVHOST" ]; then # includes protocol,host,port in this as well
+	echo "error - need a dataverse host configured"
 	exit 1
 fi
 
@@ -49,22 +49,15 @@ do
 		# handle checksum failure
 		mv files.sha files-`date '+%Y%m%d-%H:%M'`.sha # rename previous indicator file
 		echo "checksum failure"
-		msg=`cat $DEPOSIT/processed/${ulid}.json | jq ' . + {status:"validation failed"}'`
-		echo "debug(msg): $msg"
-		#sent to dv endpoint (only if API key set; log to stdout otherwise)
-		#r=`curl -k -X POST -H "X-Dataverse-key: ${DVAPIKEY}" -H 'Content-Type: application/json' -H 'Accept: application/json' -d@/tmp/${ulid}.json https://$DVHOSTINT/api/datasets/dataCaptureModule/checksumValidation`
-		#echo "debug(checksum failed curl):"
-		#echo $r
-		#TODO - cleanup /tmp once done testing
+		tmpfile=/tmp/dcm_fail-$$.json
+		echo "{\"status\":\"validation failed\",\"uploadFolder\":\"$ulid\",\"totalSize\":0}" > $tmpfile 
+		curl -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulid}"
 	else
 		# handle checksum success
 		echo "checksums verified"
 
 		#move to HOLD location
-		#datasetIdentifier=`curl -s -X GET -H "X-Dataverse-key: ${DVAPIKEY}" ${DVHOST}/api/datasets/${ulid} | jq -r .data.identifier`
-		datasetIdentifier=${ulid} # testing DV fix
-		echo "debug: datasetIdentifier = ${datasetIdentifier}"
-		#if [ ! -d ${HOLD}/${ulid} ]; then
+		datasetIdentifier=${ulid} 
 		if [ ! -d ${HOLD}/${datasetIdentifier} ]; then
 			#change to subdirectory to match batch-import code changes
 			mkdir -p ${HOLD}/${datasetIdentifier}
@@ -74,17 +67,13 @@ do
 				echo "dcm: file move $ulid" 
 				break
 			fi
-			mv ${HOLD}/${datasetIdentifier}/${ulid} ${HOLD}/${datasetIdentifier}/trn
 			rm -rf ${DEPOSIT}/${ulid}/${ulid}
 			
 			echo "data moved"
-			# send space used to dv
+			tmpfile=/tmp/dcm_fail-$$.json
 			sz=`du -sb ${HOLD}/${datasetIdentifier} | awk '{print $1} '`
-			echo "dataset $ulid (but really ${datasetIdentifier}) : space $sz : subdirectory ${ulid}"
-			# tell DV to do batch import
-			dv_userId=`cat ${DEPOSIT}/processed/${ulid}.json | jq -r .userId`
-			curl -s -X POST -H "X-Dataverse-key: ${DVAPIKEY}" "${DVHOST}/api/batch/jobs/import/datasets/files/${DOI_SHOULDER}/${datasetIdentifier}?mode=MERGE&uploadFolder=trn&totalSize=${sz}&userId=${dv_userId}" 
-			
+			echo "{\"status\":\"validation passed\",\"uploadFolder\":\"$ulid\",\"totalSize\":$sz}" > $tmpfile 
+			curl -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulid}"
 		else
 			echo "handle error - duplicate upload id $ulid"
 			echo "problem moving data; bailing out"
@@ -96,6 +85,6 @@ do
 		#de-activate key (still in id_dsa.pub if we need it)
 		rm ${DEPOSIT}/${ulid}/.ssh/authorized_keys
 	fi
-	
 done
 
+echo "post_upload completed at " `date`
