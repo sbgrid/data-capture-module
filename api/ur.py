@@ -31,6 +31,6 @@ job = queue.enqueue( proc, fname )
 # may or may not be useful to return job identifier to caller
 
 # this sets reponse headers to 200, aparently
-print('Content-Type: text/plain\n\n')
-print('recieved')
+print('Content-Type: application/json\n\n')
+print('{"status":"OK"}')
 

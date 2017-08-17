@@ -13,7 +13,7 @@ Still tentative (but less so now) API docs
 If this endpoints is called multiple times with the same datasetIdentifier, only the first request will be processed - others will be ignored.
 This is **NOT** reflected in the return code from `ur.py`.
 
-This endpoint will also send the script to `https://$DVHOSTINT/api/datasets/<id>/dataCaptureModule/rsync`, because we're iterating on the API.
+Return value of HTTP 200 / `{"status":"OK"}` means that the request was recieved; not that the request was successfully processed (semanticly this should be a different HTTP status code, but changing that broke other case).
 
 ### query / recieve transfer script
 Endpoint, parameters and behaviours.
