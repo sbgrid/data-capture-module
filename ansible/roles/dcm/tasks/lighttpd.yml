@@ -35,4 +35,7 @@
   file: state=directory path='/deposit/gen' owner=lighttpd group=lighttpd 
   tags: dcm
 
+- name: 'lighttpd sudo config for chage'
+  copy: src=etc/sudoers.d/chage dest=/etc/sudoers.d/chage owner=root group=root mode=0440
+  tags: dcm
 
