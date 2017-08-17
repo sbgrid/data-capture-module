@@ -30,6 +30,9 @@ response: 404 code and empty response means the script isn't ready yet; 200 and 
 
 Also note that these paramters are not JSON encoded; straight form parameters (see `dcm-test02.sh` in the ansible role for a curl example).
 
+With current configuration, this will also increment the expiration time on a transfer account.
+Transfer accounts for which the dataset has been successfully validated will not be re-enabled by this (which is intentional).
+
 ### post-upload
 checksum validation success or failure.
 ` { "userId":"$bar", "datasetId" : "$foo" , "status" : "$status","datasetIdentifier":"$baz"}`
