@@ -8,9 +8,25 @@ import cgi
 import json
 import os.path
 import sys
+import commands
+import datetime
 
 #TODO - read from environmental variable
 UPLOAD_ROOT='/deposit/'
+DURATION_DAYS=7
+
+def increment_transfer_expiration( ulid ):
+    '''
+    increment expiration date of transfer account on script request.
+    '''
+    t = datetime.date.today() + datetime.timedelta( days = DURATION_DAYS)
+    cmd = 'sudo /usr/bin/chage -E %s %s' % ( t.isoformat(), ulid )
+    (e,r) = commands.getstatusoutput( cmd )
+    if 0 != e:
+        sys.stderr.write('error re-setting expiration date for %s:' % ulid)
+        # since there's still a change that this is called before ur.py has finished due to
+        # dv command handling, don't error out (aka - interpret as a warning).
+        sys.stderr.write(r)
 
 def proc():
     form = cgi.FieldStorage()
@@ -42,6 +58,7 @@ def proc():
         sys.stderr.write('datasetIdentifier in request file does not match base filename\n')
         return
     req['script'] = dat
+    increment_transfer_expiration( ulid )
     print('Content-Type: application/json\n\n%s' % json.dumps( req ) )
 
 if __name__ == '__main__':
