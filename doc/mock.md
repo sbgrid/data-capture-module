@@ -5,7 +5,7 @@ This is a simple flask application, and only handles "happy path" of everything 
 
 ## Installation
 - `virtualenv ${whatever_youd_like_to_call_your_virtualenv_for_this}`
-- `source ${whatever_youd_like_to_call_your_virtualenv_for_this}`
+- `source ${whatever_youd_like_to_call_your_virtualenv_for_this}/bin/activate`
 - `cd $DCM_REPO_ROOT/api; pip install -r requirements-mock.txt`
 
 ## Running
