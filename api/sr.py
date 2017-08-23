@@ -35,14 +35,14 @@ def proc():
         ulid = form['datasetIdentifier'].value
     except KeyError:
         # meaningless to ask for a transfer script if request doesn't specify which one
-        print('Status:400\n\n')
+        print('Status:400\nContent-Type: application/json\n\n[]\n')
         sys.stderr.write('no datasetIdentifierField in FORM data\n')
         return
     fn = '/%s/gen/upload-%s.bash' % (UPLOAD_ROOT, ulid)
     if not os.path.exists( fn ):
         # transfer script not generated; return 404 according to API docs.
         # not logging errors, because it's not an error condition
-        print('Status:404\n\n')
+        print('Status:404\nContent-Type: application/json\n\n[]\n')
         return
     # read transfer script for handoff
     with open(fn, 'r') as inp:
@@ -54,7 +54,7 @@ def proc():
     # "validate" request file
     if req['datasetIdentifier'] != ulid:
         # should never happen - defensive programming, or paranoia depending on perspective
-        print('Status:500\n\n')
+        print('Status:500\nContent-Type: application/json\n\n[]\n')
         sys.stderr.write('datasetIdentifier in request file does not match base filename\n')
         return
     req['script'] = dat
