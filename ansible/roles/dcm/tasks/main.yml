@@ -5,3 +5,4 @@
 - include: lighttpd.yml
 - include: directories.yml
 - include: code_checkout.yml
+- include: gfuser.yml

@@ -1,0 +1,11 @@
+---
+# glassfish user uid/gid for NFS
+
+# groups
+- name: "glassfish group"
+  tags: dcm_gf
+  group: name=glassfish state=present gid={{ glassfish_gid }}
+- name: "glassfish group"
+  tags: dcm_gf
+  user: name=glassfish shell=/bin/bash system=yes group=glassfish uid={{ glassfish_uid }}
+
