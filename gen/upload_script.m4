@@ -67,6 +67,10 @@ echo "files to be uploaded in $ddir:"
 for x in $xs
 do
         echo $x
+	if [ "$(basename $x)" == "files.sha" ]; then
+		echo "files.sha is reserved for the checksum manifest, please remove or rename this file"
+		exit 1
+	fi
 done
 echo "is this correct (y/n)?"
 read y
