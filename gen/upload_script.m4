@@ -51,9 +51,9 @@ cat << eof > $hostkey
 UPLOADHOST include(`/etc/ssh/ssh_host_rsa_key.pub')
 eof
 
-
-echo "Please enter the full path of the directory containing dataset files to upload for dataset number: $uid"
-echo "This directory should contain only the dataset in question - all files within this directory will be uploaded "
+echo "DATAVERSE FILE UPLOAD SCRIPT"
+echo "Please enter the full path of the directory containing data files to upload for dataset number: $uid"
+echo "Make sure your data is stored under this single directory. All files within this directory and its subdirectories will be uploaded to your dataset."
 read ddir
 if [[ ! -d $ddir ]] || [[ -z $ddir ]] || [[ "$ddir" != /* ]]; then
 	echo "There appears to be a problem with your upload directory name: $ddir"
