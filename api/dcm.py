@@ -10,6 +10,12 @@ Integration stub / mock DCM API endpoint.
 from flask import Flask, Response, request
 import json
 
+# `sr.py` can fail with status code 400,404,500
+SR_FAIL_WITH=None
+
+# `ur.py` can fail with 500; but more likely by not responding
+UR_FAIL_WITH=None
+
 # pydoc doesn't support docstrings for module variables
 app = Flask(__name__)
 
@@ -25,6 +31,8 @@ def upload_request():
     '''
     request creation of an upload script.
     '''
+    if None != UR_FAIL_WITH:
+        resp = Response('',status=UR_FAIL_WITH)
     xdat = json.loads( request.data )
     print('debug: recieved request for creation of transfer script for dataset "%s" for user "%s"' % ( xdat['datasetIdentifier'], xdat['userId'] ) )
     data = {}
@@ -41,6 +49,8 @@ def script_request():
     request the upload script.
     "Happy path" only - 404 will be returned in normal use if the script is not available.
     '''
+    if None != SR_FAIL_WITH:
+        resp = Response('',status=SR_FAIL_WITH)
     dset_id  = request.form['datasetIdentifier'] 
     print('debug: recieved script request for dataset "%s" ' % dset_id)
     with open('rsync.sh', 'r') as myfile:
