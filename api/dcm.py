@@ -32,7 +32,7 @@ def upload_request():
     request creation of an upload script.
     '''
     if None != UR_FAIL_WITH:
-        resp = Response('',status=UR_FAIL_WITH)
+        return Response('',status=UR_FAIL_WITH)
     xdat = json.loads( request.data )
     print('debug: recieved request for creation of transfer script for dataset "%s" for user "%s"' % ( xdat['datasetIdentifier'], xdat['userId'] ) )
     data = {}
@@ -50,7 +50,7 @@ def script_request():
     "Happy path" only - 404 will be returned in normal use if the script is not available.
     '''
     if None != SR_FAIL_WITH:
-        resp = Response('',status=SR_FAIL_WITH)
+        return Response('',status=SR_FAIL_WITH)
     dset_id  = request.form['datasetIdentifier'] 
     print('debug: recieved script request for dataset "%s" ' % dset_id)
     with open('rsync.sh', 'r') as myfile:
