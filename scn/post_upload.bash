@@ -5,6 +5,7 @@
 echo "post_upload starting at " `date`
 
 LOCKFILE=/var/run/post_upload.pid
+source /root/.bashrc # for DVAPIKEY
 
 if [ -z "$DVAPIKEY" ]; then
 	echo "error - need a dataverse API key configured (DCM -> DV communications) "
@@ -23,7 +24,7 @@ fi
 #TODO - make configurable
 DEPOSIT=/deposit
 HOLD=/hold
-
+retry_delay=60
 SRC=/usr/local/dcm/
 
 if [ -e $LOCKFILE ]; then
@@ -51,7 +52,7 @@ do
 		echo "checksum failure"
 		tmpfile=/tmp/dcm_fail-$$.json
 		echo "{\"status\":\"validation failed\",\"uploadFolder\":\"$ulid\",\"totalSize\":0}" > $tmpfile 
-		curl -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulid}"
+		curl --insecure -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulid}"
 	else
 		# handle checksum success
 		echo "checksums verified"
@@ -62,6 +63,8 @@ do
 			#change to subdirectory to match batch-import code changes
 			mkdir -p ${HOLD}/${datasetIdentifier}
 			cp -a ${DEPOSIT}/${ulid}/${ulid}/ ${HOLD}/${datasetIdentifier}/
+			# TODO - config for gf user
+			chown -R glassfish:glassfish ${HOLD}/${datasetIdentifier}/
 			err=$?
 			if (( $err != 0 )) ; then
 				echo "dcm: file move $ulid" 
@@ -70,10 +73,25 @@ do
 			rm -rf ${DEPOSIT}/${ulid}/${ulid}
 			
 			echo "data moved"
-			tmpfile=/tmp/dcm_fail-$$.json
+			tmpfile=/tmp/dcm_fail-$$.json # not caring that the success tmp file has "fail" in the name
 			sz=`du -sb ${HOLD}/${datasetIdentifier} | awk '{print $1} '`
 			echo "{\"status\":\"validation passed\",\"uploadFolder\":\"$ulid\",\"totalSize\":$sz}" > $tmpfile 
-			curl -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulid}"
+			dvr=`curl -s --insecure -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulid}"`
+			dvst=`echo $dvr | jq -r .status`
+			if [ "OK" != "$dvst" ]; then
+				#TODO - this block should email alerts queue
+				echo "ERROR: dataverse had a problem handling the DCM success API call"
+				echo "$dvr"
+				echo "will retry in $retry_delay seconds"
+				sleep $retry_delay
+				dvr_rt=`curl -s --insecure -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulid}"`
+				dvst_rt=`echo $dvr | jq -r .status`
+				if [ "OK" != "$dvst_rt" ]; then
+					echo "ERROR: retry failed, will need to handle manually"
+				else
+					echo "ERROR: retry succeeded"
+				fi
+			fi
 		else
 			echo "handle error - duplicate upload id $ulid"
 			echo "problem moving data; bailing out"
