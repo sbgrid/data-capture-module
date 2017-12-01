@@ -10,7 +10,7 @@
 $HTTP["remoteip"] !~ "{{ FRONTEND_IP }}|127.0.0.1" {
 url.access-deny = ("")
 }
-
+server.breakagelog = "/var/log/lighttpd/breakage.log"
 
 #######################################################################
 ##
