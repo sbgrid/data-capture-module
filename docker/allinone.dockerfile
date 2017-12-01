@@ -1,4 +1,5 @@
-# this is highly experimental, and will almost certainly not work on your system without customization
+# docker file for testing DCM function
+# `/sr.py` and `/ur.py` endpoints working; checksum validation and dataverse notification not yet done
 
 FROM centos:6
 
