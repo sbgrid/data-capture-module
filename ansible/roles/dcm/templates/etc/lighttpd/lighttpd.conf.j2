@@ -7,9 +7,11 @@
 #######################################################################
 
 # refuse connections not from frontend or localhost
+{% if not 'docker' == ansible_virtualization_type %}
 $HTTP["remoteip"] !~ "{{ FRONTEND_IP }}|127.0.0.1" {
 url.access-deny = ("")
 }
+{% endif %}
 server.breakagelog = "/var/log/lighttpd/breakage.log"
 
 #######################################################################
