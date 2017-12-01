@@ -14,7 +14,7 @@
 
 # ssh-agent does handle keys through ansible
 - name: "git, webupdate" 
-  when: ( "VirtualBox" != ansible_product_name ) # don't try to do this from within VirtualBox, assuming that's vagrant
+  when: ( "VirtualBox" != ansible_product_name ) and ("docker" != ansible_virtualization_type) # don't try to do this from within VirtualBox, assuming that's vagrant
   git: repo=git://github.com/sbgrid/data-capture-module.git dest={{ DCM_PATH }}
   tags: 
    - code-update

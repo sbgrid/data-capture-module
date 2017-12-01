@@ -1,0 +1,2 @@
+`server.breakagelog = "/var/log/lighttpd/breakage.log"` in /etc/lighttpd/lighttpd.conf
+

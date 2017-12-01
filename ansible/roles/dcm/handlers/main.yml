@@ -3,5 +3,5 @@
 - name: "sshd-restart"
   service: name=sshd state=restarted
 
-- include: postfix.yml
-- include: lighttpd.yml
+- import_tasks: postfix.yml
+- import_tasks: lighttpd.yml
