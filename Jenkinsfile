@@ -18,6 +18,7 @@ node
 		{ c ->
 			sh 'sleep 30' /* wait until healthy would be better */
 			sh 'DCM_HOST=localhost:8886 ./ansible/roles/dcm/files/root/scripts/dcm-test01.sh dset_foo user_bar'
+			sh 'sleep 5' /* wait for generator */
 			sh 'DCM_HOST=localhost:8886 ./ansible/roles/dcm/files/root/scripts/dcm-test02.sh dset_foo'
 		}
 	}
