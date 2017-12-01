@@ -8,7 +8,7 @@ node
 
 	stage('build all-in-one image')
 	{
-		sh 'cp ansible/roles/dcm/vars/secrets.yml.template ansible/roles/dcm/vars/secrets.yml' #assume template values are sufficient for stand-alone testing
+		sh 'cp ansible/roles/dcm/vars/secrets.yml.template ansible/roles/dcm/vars/secrets.yml' /* assume template values are sufficient for stand-alone testing */
 		app = docker.build('dcm','-f docker/allinone.dockerfile .')
 	}
 
