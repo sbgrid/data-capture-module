@@ -1,8 +1,8 @@
 ---
 #
-- include: config.yml
-- include: groups.yml
-- include: lighttpd.yml
-- include: directories.yml
-- include: code_checkout.yml
-- include: gfuser.yml
+- import_tasks: config.yml
+- import_tasks: groups.yml
+- import_tasks: lighttpd.yml
+- import_tasks: directories.yml
+- import_tasks: code_checkout.yml
+- import_tasks: gfuser.yml

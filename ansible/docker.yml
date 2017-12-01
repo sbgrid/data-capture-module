@@ -1,0 +1,11 @@
+# hosts can probably be made more specific if necessary (and vagrant stays happy with them)
+- hosts: all
+#  sudo: yes
+  vars_files:
+   - roles/dcm/vars/secrets.yml
+  roles:
+   - dcm
+   - pydev
+   - redis-srv
+   - rq-srv
+
