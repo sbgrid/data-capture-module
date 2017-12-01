@@ -1,3 +1,4 @@
+/* first pass jenkins pipeline script for stand-alone dcm */
 node
 {
 	def app
