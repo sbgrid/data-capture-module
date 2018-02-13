@@ -1,4 +1,4 @@
-# docker run -it --rm -v ${FULL_PATH_TO_HOME}:/build c6build bash
+# docker run -it --rm -v ${FULL_PATH_TO_DEP_DIRECTORY}:/build c6build bash
 
 FROM centos:6
 # starting centos 6 build image for DCM
