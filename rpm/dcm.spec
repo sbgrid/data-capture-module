@@ -6,7 +6,7 @@ Source: dcm-0.1.tar.gz
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-${version}
 License: proprietary
-#Requires: python
+Requires: python python-pip python-dateutil redis lighttpd openssh-server rsync perl-Digest-SHA m4 jq rssh
 %description 
 data capture module, deposition protocol rsync+ssh protocol
 
