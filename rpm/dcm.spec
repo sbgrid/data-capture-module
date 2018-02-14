@@ -21,20 +21,18 @@ zcat $RPM_SOURCE_DIR/dcm-0.1.tar.gz | tar -xvf -
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/opt/dcm/
 mkdir -p %{buildroot}/etc/dcm
-pwd
-ls *
 
 cp -r api %{buildroot}/opt/dcm
 cp -r gen %{buildroot}/opt/dcm
 cp -r scn %{buildroot}/opt/dcm
-echo "something would go here" > %{buildroot}/etc/dcm/stub.config
+cp doc/config/rq-init-d %{buildroot}/etc/dcm/rq-init-d
 
 %clean
 
 rm -rf %{buildroot}
 
 %files
-/etc/dcm/stub.config
+/etc/dcm/rq-init-d
 /opt/dcm/api/*
 /opt/dcm/gen/*
 /opt/dcm/scn/post_upload.bash
