@@ -8,3 +8,4 @@ secrets.yml
 rpm/dep/dist/
 rpm/dep/src/
 rpm/dep/rq/rq-0.8.1
+dist/
