@@ -26,6 +26,7 @@ cp -r api %{buildroot}/opt/dcm
 cp -r gen %{buildroot}/opt/dcm
 cp -r scn %{buildroot}/opt/dcm
 cp doc/config/rq-init-d %{buildroot}/etc/dcm/rq-init-d
+cp doc/config/lighttpd.conf %{buildroot}/etc/dcm/lighttpd-conf-dcm
 
 %clean
 
@@ -33,6 +34,7 @@ rm -rf %{buildroot}
 
 %files
 /etc/dcm/rq-init-d
+/etc/dcm/lighttpd-conf-dcm
 /opt/dcm/api/*
 /opt/dcm/gen/*
 /opt/dcm/scn/post_upload.bash
