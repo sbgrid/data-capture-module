@@ -8,6 +8,6 @@ if [ ! -e ../src/rq-${rq_version}.tar.gz ]; then
 fi
 tar zxf ../src/rq-${rq_version}.tar.gz
 cd rq-${rq_version}
-python setup.py bdist --format=rpm
+python setup.py bdist --format=rpm --no-autoreq
 cp dist/rq-${rq_version}-1.noarch.rpm ../../dist/
 
