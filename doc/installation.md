@@ -1,5 +1,7 @@
 # Installation Instructions
 
+These are *DRAFT* instructions, so there are probably still bugs.
+
 The DCM is designed to work on linux systems, and should work on most unixes.
 For non-development work, CentOS 6 is recommended. Other versions and distributions should work, but you should know what you're doing.
 

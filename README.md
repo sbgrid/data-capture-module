@@ -15,16 +15,6 @@ Significant code cleanup (removal of hard-coded information) remains to be done.
 ## system configuration
 see [doc/installation.md](installation instructions).
 
-### stubs to be made configurable
-- username for upload script generation
-- filesystem paths
-
-### TODO
-- revisit the TODO list (and move into github issues)
-- clean up sshd config
-- improve docs 
-- lighttpd paths 
-
 ### general organization
 - `api/` : external interface that repository software will call
 - `gen/` : transfer script generation for `rsync+ssh` uploads
