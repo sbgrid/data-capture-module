@@ -29,12 +29,15 @@ cp -r api %{buildroot}/opt/dcm
 cp -r gen %{buildroot}/opt/dcm
 cp -r scn %{buildroot}/opt/dcm
 mkdir -p %{buildroot}/deposit/requests
+mkdir -p %{buildroot}/deposit/gen
+mkdir -p %{buildroot}/deposit/processed
 mkdir -p %{buildroot}/hold/requests
 cp requirements.txt %{buildroot}/opt/dcm/
 cp doc/config/rq-init-d %{buildroot}/etc/dcm/rq-init-d
 cp doc/config/lighttpd.conf %{buildroot}/etc/dcm/lighttpd-conf-dcm
 cp doc/config/lighttpd-modules.conf %{buildroot}/etc/dcm/lighttpd-modules-dcm
-
+mkdir -p %{buildroot}/etc/sudoers.d
+cp doc/config/sudoers-chage %{buildroot}/etc/sudoers.d/chage
 
 %clean
 
@@ -42,6 +45,7 @@ rm -rf %{buildroot}
 
 %files
 /etc/dcm/rq-init-d
+/etc/sudoers.d/chage
 /etc/dcm/lighttpd-conf-dcm
 /etc/dcm/lighttpd-modules-dcm
 /opt/dcm/api/*
@@ -49,4 +53,6 @@ rm -rf %{buildroot}
 /opt/dcm/scn/post_upload.bash
 /opt/dcm/requirements.txt
 %dir %attr(0744,lighttpd,lighttpd) /deposit/requests
+%dir %attr(0744,lighttpd,lighttpd) /deposit/gen
+%dir %attr(0744,lighttpd,lighttpd) /deposit/processed
 %dir %attr(0744,lighttpd,lighttpd) /hold/requests
