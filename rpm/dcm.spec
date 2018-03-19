@@ -25,6 +25,9 @@ mkdir -p %{buildroot}/etc/dcm
 cp -r api %{buildroot}/opt/dcm
 cp -r gen %{buildroot}/opt/dcm
 cp -r scn %{buildroot}/opt/dcm
+mkdir %{buildroot}/deposit
+mkdir %{buildroot}/hold
+cp requirements.txt %{buildroot}/opt/dcm/
 cp doc/config/rq-init-d %{buildroot}/etc/dcm/rq-init-d
 cp doc/config/lighttpd.conf %{buildroot}/etc/dcm/lighttpd-conf-dcm
 
@@ -38,3 +41,6 @@ rm -rf %{buildroot}
 /opt/dcm/api/*
 /opt/dcm/gen/*
 /opt/dcm/scn/post_upload.bash
+/opt/dcm/requirements.txt
+/deposit
+/hold
