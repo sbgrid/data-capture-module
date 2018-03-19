@@ -1,3 +1,6 @@
+# older version with ansible installation procedure (vs rpm installation procedure).
+# In other words, you're probably looking for c6test.dockerfile instead
+#
 # docker file for testing DCM function
 # `/sr.py` and `/ur.py` endpoints working; checksum validation and dataverse notification not yet done
 

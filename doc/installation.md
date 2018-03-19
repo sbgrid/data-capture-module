@@ -1,9 +1,9 @@
 # Installation Instructions
 
-These are *DRAFT* instructions, so there are probably still bugs.
+There may still be bugs in this documentation, but there should be fewer.
 
 The DCM is designed to work on linux systems, and should work on most unixes.
-For non-development work, CentOS 6 is recommended. Other versions and distributions should work, but you should know what you're doing.
+For non-development work, CentOS 6 is *strongly recommended*. Other versions and distributions should work, but you should know what you're doing.
 
 *This DCM creates OS accounts - install it on a stand-alone, disposable system*
 
