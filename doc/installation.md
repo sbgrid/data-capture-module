@@ -15,6 +15,6 @@ For non-development work, CentOS 6 is recommended. Other versions and distributi
 - copy `/etc/dcm/lighttpd-modules-dcm` to `/etc/lighttpd/modules.conf`, and edit if necessary.
 - configure by (sigh) editing `/root/.bashrc` to set `UPLOADHOST`,`DVAPIKEY`,`DVHOSTINT`,`DVHOST` as described in `dev-installation.md`.
 - configure NFS mounts for `/deposit` (only needs to be accessable from the DCM) and `/hold` (needs to be shared by DCM and Dataverse).
-- Start `redis`, `rq`, and `lighttpd` services; create cron job to run `post_upload.bash`.
+- Start `sshd`, `redis`, `rq`, and `lighttpd` services; create cron job to run `post_upload.bash`.
 
 
