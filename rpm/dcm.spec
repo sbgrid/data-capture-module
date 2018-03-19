@@ -6,7 +6,7 @@ Source: dcm-0.1.tar.gz
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-${version}
 License: proprietary
-Requires: python python-pip python-dateutil redis lighttpd openssh-server rsync perl-Digest-SHA m4 jq rssh
+Requires: python python-pip python-dateutil redis lighttpd openssh-server rsync perl-Digest-SHA m4 jq rssh sudo
 %description 
 data capture module, deposition protocol rsync+ssh protocol
 
@@ -16,6 +16,9 @@ zcat $RPM_SOURCE_DIR/dcm-0.1.tar.gz | tar -xvf -
 
 %build
 # empty - no compile needed
+
+%pre
+geteng group upload || groupadd upload
 
 %install
 rm -rf %{buildroot}
@@ -32,6 +35,7 @@ cp doc/config/rq-init-d %{buildroot}/etc/dcm/rq-init-d
 cp doc/config/lighttpd.conf %{buildroot}/etc/dcm/lighttpd-conf-dcm
 cp doc/config/lighttpd-modules.conf %{buildroot}/etc/dcm/lighttpd-modules-dcm
 
+
 %clean
 
 rm -rf %{buildroot}
@@ -44,5 +48,5 @@ rm -rf %{buildroot}
 /opt/dcm/gen/*
 /opt/dcm/scn/post_upload.bash
 /opt/dcm/requirements.txt
-%dir /deposit/requests
-%dir /hold/requests
+%dir %attr(0744,lighttpd,lighttpd) /deposit/requests
+%dir %attr(0744,lighttpd,lighttpd) /hold/requests
