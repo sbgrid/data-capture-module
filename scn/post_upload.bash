@@ -25,7 +25,7 @@ fi
 DEPOSIT=/deposit
 HOLD=/hold
 retry_delay=60
-SRC=/usr/local/dcm/
+SRC=/opt/dcm/
 
 if [ -e $LOCKFILE ]; then
 	echo "post_upload scan still in progress at " `date` " , aborting"
