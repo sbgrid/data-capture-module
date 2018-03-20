@@ -6,7 +6,7 @@ Source: dcm-0.1.tar.gz
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-${version}
 License: proprietary
-Requires: python python-pip python-dateutil redis lighttpd openssh-server rsync perl-Digest-SHA m4 jq rssh sudo
+Requires: python python-pip python-dateutil redis lighttpd openssh-server openssh-clients rsync perl-Digest-SHA m4 jq rssh sudo
 %description 
 data capture module, deposition protocol rsync+ssh protocol
 
@@ -36,6 +36,7 @@ cp requirements.txt %{buildroot}/opt/dcm/
 cp doc/config/rq-init-d %{buildroot}/etc/dcm/rq-init-d
 cp doc/config/lighttpd.conf %{buildroot}/etc/dcm/lighttpd-conf-dcm
 cp doc/config/lighttpd-modules.conf %{buildroot}/etc/dcm/lighttpd-modules-dcm
+cp doc/config/rssh.conf %{buildroot}/etc/dcm/dcm-rssh.conf
 mkdir -p %{buildroot}/etc/sudoers.d
 cp doc/config/sudoers-chage %{buildroot}/etc/sudoers.d/chage
 
@@ -48,6 +49,7 @@ rm -rf %{buildroot}
 /etc/sudoers.d/chage
 /etc/dcm/lighttpd-conf-dcm
 /etc/dcm/lighttpd-modules-dcm
+/etc/dcm/dcm-rssh.conf
 /opt/dcm/api/*
 /opt/dcm/gen/*
 /opt/dcm/scn/post_upload.bash
