@@ -13,6 +13,7 @@ For non-development work, CentOS 6 is *strongly recommended*. Other versions and
 - copy `/etc/dcm/rq-init-d` to `/etc/init.d/rq`, and edit if necessary
 - copy `/etc/dcm/lighttpd-conf-dcm` to `/etc/lighttpd/lighttpd.conf`, and edit if necessary.
 - copy `/etc/dcm/lighttpd-modules-dcm` to `/etc/lighttpd/modules.conf`, and edit if necessary.
+- copy `/etc/dcm/dcm-rssh.conf` to `/etc/rssh.conf`, and edit if necessary.
 - configure sudo for lighttpd (see `doc/config/sudoers-chage` for an example that can be placed in `/etc/sudoers.d`).
 - configure by (sigh) editing `/root/.bashrc` to set `UPLOADHOST`,`DVAPIKEY`,`DVHOSTINT`,`DVHOST` as described in `dev-installation.md`.
 - configure NFS mounts for `/deposit` (only needs to be accessable from the DCM) and `/hold` (needs to be shared by DCM and Dataverse).
