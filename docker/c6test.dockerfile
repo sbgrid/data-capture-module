@@ -9,4 +9,5 @@ RUN pip install -r /opt/dcm/requirements.txt
 RUN /root/test_install.sh
 COPY docker/entrypoint-c6test.sh /
 EXPOSE 80
+EXPOSE 22
 CMD ["/entrypoint-c6test.sh"]

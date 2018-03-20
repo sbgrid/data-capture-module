@@ -3,7 +3,7 @@
 version: '3'
 
 services:
-  server:
+  dcm:
     build:
       context: .
       dockerfile: docker/c6test.dockerfile
@@ -16,4 +16,4 @@ services:
     container_name: dcm_client
     # connect with `docker -it dcm_client bash` after docker-compose up
     environment:
-      DCM_HOST: server
+      DCM_HOST: dcm
