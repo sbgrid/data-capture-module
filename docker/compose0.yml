@@ -1,0 +1,19 @@
+# first pass docker compose for testing; `docker-compose -f docker/compose0.yml --project-directory . up`
+
+version: '3'
+
+services:
+  server:
+    build:
+      context: .
+      dockerfile: docker/c6test.dockerfile
+  client:
+    build: 
+      context: .
+      dockerfile: docker/c6client.dockerfile
+    # necessary for docker-compose to keep the client container running
+    command: sleep infinity
+    container_name: dcm_client
+    # connect with `docker -it dcm_client bash` after docker-compose up
+    environment:
+      DCM_HOST: server

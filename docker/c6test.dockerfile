@@ -8,4 +8,5 @@ RUN yum localinstall -y /tmp/dcm-0.1-0.noarch.rpm
 RUN pip install -r /opt/dcm/requirements.txt
 RUN /root/test_install.sh
 COPY docker/entrypoint-c6test.sh /
+EXPOSE 80
 CMD ["/entrypoint-c6test.sh"]
