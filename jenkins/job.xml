@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- cat $THIS_FILE | java -jar jenkins-cli.jar -s $JENKINS_URL create-job $JOBNAME -->
+<flow-definition plugin="workflow-job@">
+	<description></description>
+	<keepDependencies>false</keepDependencies>
+	<properties>
+		<org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+			<triggers/>
+		</org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+	</properties>
+	<definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps">
+		<scm class="hudson.plugins.git.GitSCM" plugin="git">
+			<configVersion>2</configVersion>
+			<userRemoteConfigs>
+				<hudson.plugins.git.UserRemoteConfig>
+					<!-- adjust repository URL as appropriate -->
+					<url>http://localhost:8082/user0/dcm</url>
+				</hudson.plugins.git.UserRemoteConfig>
+			</userRemoteConfigs>
+			<branches>
+				<hudson.plugins.git.BranchSpec>
+					<!-- adjust branch as appropriate -->
+					<name>*/wksp201803</name>
+				</hudson.plugins.git.BranchSpec>
+			</branches>
+			<doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+			<submoduleCfg class="list"/>
+			<extensions/>
+		</scm>
+		<scriptPath>jenkins/Jenkinsfile</scriptPath>
+		<lightweight>true</lightweight>
+	</definition>
+	<triggers/>
+	<disabled>false</disabled>
+</flow-definition>
