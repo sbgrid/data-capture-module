@@ -75,7 +75,8 @@ pipeline
 			{
 				always
 				{
-					sh 'docker-compose -f docker/compose0.yml --project-directory . rm -f'
+					sh 'docker-compose -f docker/compose0.yml --project-directory . down'
+					/*sh 'docker-compose -f docker/compose0.yml --project-directory . rm -f'*/
 				}
 			}
 		}
