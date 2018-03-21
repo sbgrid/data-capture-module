@@ -7,6 +7,7 @@ services:
     build:
       context: .
       dockerfile: docker/c6test.dockerfile
+    container_name: dcm_server
   client:
     build: 
       context: .
