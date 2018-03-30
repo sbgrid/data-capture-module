@@ -1,6 +1,6 @@
 # docker run -it --rm -v ${FULL_PATH_REPO_ROOT}:/build c6build bash
 
-# build in ${FULL_PATH_REPO_ROOT}/rpm/deb
+# build in ${FULL_PATH_REPO_ROOT}/rpm/dep
 
 FROM centos:6
 # starting centos 6 build image for DCM

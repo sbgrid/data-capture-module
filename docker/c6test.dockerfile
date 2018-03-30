@@ -7,6 +7,7 @@ COPY scripts/test_install.sh /root/
 RUN yum localinstall -y /tmp/dcm-0.1-0.noarch.rpm
 RUN pip install -r /opt/dcm/requirements.txt
 RUN /root/test_install.sh
+RUN useradd glassfish
 COPY docker/entrypoint-c6test.sh /
 EXPOSE 80
 EXPOSE 22

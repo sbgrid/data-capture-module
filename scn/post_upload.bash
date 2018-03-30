@@ -80,16 +80,20 @@ do
 			dvst=`echo $dvr | jq -r .status`
 			if [ "OK" != "$dvst" ]; then
 				#TODO - this block should email alerts queue
-				echo "ERROR: dataverse had a problem handling the DCM success API call"
-				echo "$dvr"
-				echo "will retry in $retry_delay seconds"
-				sleep $retry_delay
-				dvr_rt=`curl -s --insecure -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulid}"`
-				dvst_rt=`echo $dvr | jq -r .status`
-				if [ "OK" != "$dvst_rt" ]; then
-					echo "ERROR: retry failed, will need to handle manually"
+				echo "ERROR: dataverse at ${DVHOST} had a problem handling the DCM success API call"
+				if [ "DVHOST" == "${DVHOST}" ]; then
+					echo "DVHOST == DVHOST; assuming internal test without Dataverse and not retrying"
 				else
-					echo "ERROR: retry succeeded"
+					echo "$dvr"
+					echo "will retry in $retry_delay seconds"
+					sleep $retry_delay
+					dvr_rt=`curl -s --insecure -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulid}"`
+					dvst_rt=`echo $dvr | jq -r .status`
+					if [ "OK" != "$dvst_rt" ]; then
+						echo "ERROR: retry failed, will need to handle manually"
+					else
+						echo "ERROR: retry succeeded"
+					fi
 				fi
 			fi
 		else

@@ -32,6 +32,7 @@ mkdir -p %{buildroot}/deposit/requests
 mkdir -p %{buildroot}/deposit/gen
 mkdir -p %{buildroot}/deposit/processed
 mkdir -p %{buildroot}/hold/requests
+mkdir -p %{buildroot}/hold/stage
 cp requirements.txt %{buildroot}/opt/dcm/
 cp doc/config/rq-init-d %{buildroot}/etc/dcm/rq-init-d
 cp doc/config/lighttpd.conf %{buildroot}/etc/dcm/lighttpd-conf-dcm
@@ -58,3 +59,4 @@ rm -rf %{buildroot}
 %dir %attr(0744,lighttpd,lighttpd) /deposit/gen
 %dir %attr(0744,lighttpd,lighttpd) /deposit/processed
 %dir %attr(0744,lighttpd,lighttpd) /hold/requests
+%dir %attr(0744,lighttpd,lighttpd) /hold/stage
