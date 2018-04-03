@@ -4,3 +4,8 @@
 secrets.yml
 .coverage
 *.html
+
+rpm/dep/dist/
+rpm/dep/src/
+rpm/dep/rq/rq-0.8.1
+dist/

@@ -7,23 +7,8 @@ In more general terms, this is an external module designed to allow users to upl
 The [https://osf.io/wf24a](presentation slides) from the 2017 Dataverse Community Meeting may provide some additional information.
 The design is intented to be agnostic to transfer protocol, and currently implements `rsync over ssh`.
 
-## documentation
-More extensive documentation is in the `doc/` directory.
-
-Significant code cleanup (removal of hard-coded information) remains to be done.
-
-## system configuration
-see [doc/installation.md](installation instructions).
-
-### stubs to be made configurable
-- username for upload script generation
-- filesystem paths
-
-### TODO
-- revisit the TODO list (and move into github issues)
-- clean up sshd config
-- improve docs 
-- lighttpd paths 
+## DCM installation
+See [doc/installation.md](installation instructions) for DCM installation instructions, and the [http://guides.dataverse.org](Dataverse Guides) for configuring the two systems together.
 
 ### general organization
 - `api/` : external interface that repository software will call

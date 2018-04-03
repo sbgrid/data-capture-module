@@ -1,37 +1,21 @@
 # Installation Instructions
 
 The DCM is designed to work on linux systems, and should work on most unixes.
-These instructions (*currently*) assume the system is being configured with ansible, and are configuring a CentOS 6 system which isn't being used for other purposes.
-The docker image is currently experimental.
+For non-development work, CentOS 6 is *strongly recommended*. Other versions and distributions should work, but you should know what you're doing.
 
-## Quickstart
-- using `secrets.yml.template` as a template to create `secrets.yml`
-- configure the hostlist as appropriate
-- run the playbook: `cd ansible; ansible-playbook -i dev.hostlist dcm.yml`
+*This DCM creates OS accounts - install it on a stand-alone, disposable system*
 
-## Dependencies
-Highlights from `dcm/tasks/config.yml` "package install" entry
-- `lighttpd` : external interface for Dataverse to communicate with the DCM
-- `sshd`, `rsync` : for keypair generation and recieving uploads
-- `perl-Digest-SHA` : for checksum verification
-- `rssh` : default shell for upload accounts to prevent interactive login
+- configure NFS mounts for `/deposit` (only needs to be accessable from the DCM) and `/hold` (needs to be shared by DCM and Dataverse).
+- download RPM from the github [release page](https://github.com/sbgrid/data-capture-module/releases/latest "release page")
+- install RPM (and necessary dependencies). The EPEL repo is assumed to be available for these dependencies, but is not strictly required if you get the dependencies from elsewhere.
+- install pip dependencies (`pip install -r /opt/dcm/requirements.txt`)
+- copy `/etc/dcm/rq-init-d` to `/etc/init.d/rq`, and edit if necessary (which should only be necessary if you have installed in an unexpected manner).
+- copy `/etc/dcm/lighttpd-conf-dcm` to `/etc/lighttpd/lighttpd.conf`, and edit if necessary (in particulary, to *restrict access to the Dataverse application server*).
+- copy `/etc/dcm/lighttpd-modules-dcm` to `/etc/lighttpd/modules.conf`, and edit if necessary (which should only be necessary if you have installed in an unexpected manner).
+- copy `/etc/dcm/dcm-rssh.conf` to `/etc/rssh.conf`, and edit if necessary (which should only be necessary if you have installed in an unexpected manner).
+- configure sudo for lighttpd (see `doc/config/sudoers-chage` for an example that can be placed in `/etc/sudoers.d`) and edit if necessary (which should only be necessary if you have installed in an unexpected manner).
+- configure by (sigh) editing `/root/.bashrc` to set `UPLOADHOST`,`DVAPIKEY`,`DVHOSTINT`,`DVHOST` as described in `dev-installation.md`.
+- Start `sshd`, `redis`, `rq`, and `lighttpd` services; create cron job to run `post_upload.bash`.
 
-## Configuration options
-### `dcm/vars/main.yml`
-- `FRONTEND_IP` : IP address or hostname of system allowed to send requests (for upload scripts/tokens) to the DCM; this is handled by refusing `lighttpd` connections from other hosts.
-- `DCM_PATH` : local filesystem path for the DCM software to be installed to.  Installation is currently handled by cloning the repository, although there isn't a strict requirement for it to be handled that way.
-- `DCM_USER`, `DCM_GROUP` : local username and group for the DCM to run under
-- `DCM_UID`, `DCM_GID` : for NFS compatability, UID,GID of DCM user
-- `UPLOAD_DIRECTORY` : base directory for recieving datasets, and transfer account home directories
-- `HOLD_DIRECTORY` : base directory for where datasets are transfered to after checksum validation
 
-### `dcm/vars/secrets.yml`
-- `UPLOADHOST` : IP address or hostname users will use for transferring datasets to
-- `DVAPIKEY` : Dataverse API key with appropriate permissions the DCM.  Current assumption is that this is an admin key (aka - it's a system account, not a user account).
-- `DVHOSTINT` : IP address or hostname for Dataverse instance the DCM will be sending messags to.  This will frequently be the same as `FRONTEND_IP`, but there is no requirement for the two to be the same. *obscolete - use `DVHOST`*
-- `DVHOST` : protocol, host, and port (if necessary) for DCM to communicate with Datverse API endpoints.  Currently calls the batch-import APIs (`api/batch/jobs/import/datasets/files/$doi`) on validation success; will call other APIs on failure when those are implemented.
-
-## Vagrant Notes
-- CentOS 6 vagrant box used for testing has some version dependencies: 1.1.3 and 1.0.7 are known tow work, others may have issues. In principle, any CentOS 6 box should work.
-- For vagrant shared filesystems (aka using shared folders to simulate NFS for local development/testing), glassfish needs to be run as root (aka - running glassfish as non-root user doesn't play nicely with shared folders mapped to vagrant user).
-
+These installation instructions are relatively recent, so please feel to open an issue in the [github repo](https://github.com/sbgrid/data-capture-module/issues "DCM github issues") if you find any problems.
