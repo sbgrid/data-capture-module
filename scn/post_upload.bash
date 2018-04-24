@@ -59,7 +59,7 @@ do
 
 		#move to HOLD location
 		datasetIdentifier=${ulid} 
-		if [ ! -d ${HOLD}/${datasetIdentifier} ]; then
+		if [ ! -d ${HOLD}/${datasetIdentifier}/${ulid} ]; then
 			#change to subdirectory to match batch-import code changes
 			mkdir -p ${HOLD}/${datasetIdentifier}
 			cp -a ${DEPOSIT}/${ulid}/${ulid}/ ${HOLD}/${datasetIdentifier}/
