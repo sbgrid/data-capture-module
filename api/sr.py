@@ -33,6 +33,7 @@ def proc():
     try:
         # retrieve upload ID from form data
         ulid = form['datasetIdentifier'].value
+        ulid = ulid.split("/")[1]
     except KeyError:
         # meaningless to ask for a transfer script if request doesn't specify which one
         print('Status:400\nContent-Type: application/json\n\n[]\n')
@@ -52,11 +53,13 @@ def proc():
         req = json.load( inp )
 
     # "validate" request file
-    if req['datasetIdentifier'] != ulid:
-        # should never happen - defensive programming, or paranoia depending on perspective
-        print('Status:500\nContent-Type: application/json\n\n[]\n')
-        sys.stderr.write('datasetIdentifier in request file does not match base filename\n')
-        return
+
+        #MAD: Commented out as req has the shoulder, not 100% sure what I'll do to fix
+#    if req['datasetIdentifier'] != ulid:
+#        # should never happen - defensive programming, or paranoia depending on perspective
+#        print('Status:500\nContent-Type: application/json\n\n[]\n')
+#        sys.stderr.write('datasetIdentifier in request ( %s ) file does not match base filename ( %s ) \n' % (req['datasetIdentifier'], ulid))
+#        return
     req['script'] = dat
     increment_transfer_expiration( ulid )
     print('Content-Type: application/json\n\n%s' % json.dumps( req ) )
