@@ -107,7 +107,7 @@ def proc( req_file, verbose = True, done_dir = '/deposit/processed' ):
     x = json.load( inp )
     inp.close()
     uid = x['datasetIdentifier']
-    uid = uid.split("/")[1] #Dataverse 4.9 passes the shoulder with the PID
+    uid = uid.replace("/","") #removing the / from the UID w/ shoulder
     if generated_already( uid ):
         # nothing new to do, bail out of this one
         if verbose:
