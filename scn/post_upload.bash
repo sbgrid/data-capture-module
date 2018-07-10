@@ -18,7 +18,7 @@ fi
 
 if [ -z "${DOI_SHOULDER}" ]; then
 	echo "warning - using test DOI shoulder because one isn't configured"
-	DOI_SHOULDER="10.5072/FK2"
+	DOI_SHOULDER="10.5072"
 fi
 
 #TODO - make configurable
@@ -34,11 +34,24 @@ fi
 echo $$ > $LOCKFILE
 trap "rm -f '$LOCKFILE'" EXIT
 
+
+
+
 # scan for indicators
 for indicator_file in `find $DEPOSIT -name files.sha`
 do
+
+
+
 	ddir=`dirname $indicator_file`
 	ulid=`basename $ddir`
+
+	#MAD CODE BEGIN
+	ulidFromJson="$(grep -Po '"'"datasetIdentifier"'"\s*:\s*"\K([^"]*)' $DEPOSIT/processed/${ulid}.json)"
+	echo "$ulidFromJson"
+	#exit
+	#MAD CODE END
+
 	echo $indicator_file " : " $ddir " : " $ulid
 
 	# verify checksums prior to moving dataset
@@ -46,25 +59,30 @@ do
 	nl=`wc -l files.sha | awk '{print $1}'`
 	shasum -s -c files.sha 
 	err=$?
+
 	if (( ( $err != 0 ) || ( $nl == 0 ) )); then
 		# handle checksum failure
 		mv files.sha files-`date '+%Y%m%d-%H:%M'`.sha # rename previous indicator file
 		echo "checksum failure"
 		tmpfile=/tmp/dcm_fail-$$.json
-		echo "{\"status\":\"validation failed\",\"uploadFolder\":\"$ulid\",\"totalSize\":0}" > $tmpfile 
-		curl --insecure -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulid}"
+		echo "{\"status\":\"validation failed\",\"uploadFolder\":\"$ulidFromJson\",\"totalSize\":0}" > $tmpfile 
+		curl --insecure -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulidFromJson}"
 	else
 		# handle checksum success
 		echo "checksums verified"
 
 		#move to HOLD location
 		datasetIdentifier=${ulid} 
-		if [ ! -d ${HOLD}/${datasetIdentifier}/${ulid} ]; then
+		if [ ! -d ${HOLD}/${ulidFromJson}/${ulidFromJson} ]; then
+		#if true; then
 			#change to subdirectory to match batch-import code changes
-			mkdir -p ${HOLD}/${datasetIdentifier}
-			cp -a ${DEPOSIT}/${ulid}/${ulid}/ ${HOLD}/${datasetIdentifier}/
+			mkdir -p ${HOLD}/${ulidFromJson}
+
+#MAD: I was letting dcm keep the weird-truncated naming structure from pids, but its then copying that over now
+#... no it actually looks ok
+			cp -a ${DEPOSIT}/${ulid}/${ulid}/ ${HOLD}/${ulidFromJson}/
 			# TODO - config for gf user
-			chown -R glassfish:glassfish ${HOLD}/${datasetIdentifier}/
+			chown -R glassfish:glassfish ${HOLD}/${ulidFromJson}/
 			err=$?
 			if (( $err != 0 )) ; then
 				echo "dcm: file move $ulid" 
@@ -74,9 +92,17 @@ do
 			
 			echo "data moved"
 			tmpfile=/tmp/dcm_fail-$$.json # not caring that the success tmp file has "fail" in the name
-			sz=`du -sb ${HOLD}/${datasetIdentifier} | awk '{print $1} '`
-			echo "{\"status\":\"validation passed\",\"uploadFolder\":\"$ulid\",\"totalSize\":$sz}" > $tmpfile 
-			dvr=`curl -s --insecure -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulid}"`
+			sz=`du -sb ${HOLD}/${ulidFromJson} | awk '{print $1} '`
+			echo "{\"status\":\"validation passed\",\"uploadFolder\":\"$datasetIdentifier\",\"totalSize\":$sz}" > $tmpfile 
+
+			#MAD: Here we need to pull the uid from the json $DEPOSIT/processed/${ulid}.json
+
+
+
+
+
+
+			dvr=`curl -s --insecure -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulidFromJson}"`
 			dvst=`echo $dvr | jq -r .status`
 			if [ "OK" != "$dvst" ]; then
 				#TODO - this block should email alerts queue
@@ -87,7 +113,7 @@ do
 					echo "$dvr"
 					echo "will retry in $retry_delay seconds"
 					sleep $retry_delay
-					dvr_rt=`curl -s --insecure -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulid}"`
+					dvr_rt=`curl -s --insecure -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulidFromJson}"`
 					dvst_rt=`echo $dvr | jq -r .status`
 					if [ "OK" != "$dvst_rt" ]; then
 						echo "ERROR: retry failed, will need to handle manually"
