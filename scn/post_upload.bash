@@ -34,28 +34,20 @@ fi
 echo $$ > $LOCKFILE
 trap "rm -f '$LOCKFILE'" EXIT
 
-
-
-
 # scan for indicators
 for indicator_file in `find $DEPOSIT -name files.sha`
 do
 
-
-
 	ddir=`dirname $indicator_file`
-	ulid=`basename $ddir`
+	ulidFolder=`basename $ddir` #this does not have the pid / in it
 
-	#MAD CODE BEGIN
-	ulidFromJson="$(grep -Po '"'"datasetIdentifier"'"\s*:\s*"\K([^"]*)' $DEPOSIT/processed/${ulid}.json)"
-	echo "$ulidFromJson"
-	#exit
-	#MAD CODE END
+	# the real ulid (pid) from dataverse with the shoulder (usually FK2/...)
+	ulidFromJson="$(grep -Po '"'"datasetIdentifier"'"\s*:\s*"\K([^"]*)' $DEPOSIT/processed/${ulidFolder}.json)"
 
-	echo $indicator_file " : " $ddir " : " $ulid
+	echo $indicator_file " : " $ddir " : " $ulidFolder
 
 	# verify checksums prior to moving dataset
-	cd ${DEPOSIT}/${ulid}/${ulid} 
+	cd ${DEPOSIT}/${ulidFolder}/${ulidFolder} 
 	nl=`wc -l files.sha | awk '{print $1}'`
 	shasum -s -c files.sha 
 	err=$?
@@ -72,35 +64,25 @@ do
 		echo "checksums verified"
 
 		#move to HOLD location
-		datasetIdentifier=${ulid} 
 		if [ ! -d ${HOLD}/${ulidFromJson}/${ulidFromJson} ]; then
 		#if true; then
 			#change to subdirectory to match batch-import code changes
 			mkdir -p ${HOLD}/${ulidFromJson}
 
-#MAD: I was letting dcm keep the weird-truncated naming structure from pids, but its then copying that over now
-#... no it actually looks ok
-			cp -a ${DEPOSIT}/${ulid}/${ulid}/ ${HOLD}/${ulidFromJson}/
+			cp -a ${DEPOSIT}/${ulidFolder}/${ulidFolder}/ ${HOLD}/${ulidFromJson}/
 			# TODO - config for gf user
 			chown -R glassfish:glassfish ${HOLD}/${ulidFromJson}/
 			err=$?
 			if (( $err != 0 )) ; then
-				echo "dcm: file move $ulid" 
+				echo "dcm: file move $ulidFolder" 
 				break
 			fi
-			rm -rf ${DEPOSIT}/${ulid}/${ulid}
+			rm -rf ${DEPOSIT}/${ulidFolder}/${ulidFolder}
 			
 			echo "data moved"
 			tmpfile=/tmp/dcm_fail-$$.json # not caring that the success tmp file has "fail" in the name
 			sz=`du -sb ${HOLD}/${ulidFromJson} | awk '{print $1} '`
-			echo "{\"status\":\"validation passed\",\"uploadFolder\":\"$datasetIdentifier\",\"totalSize\":$sz}" > $tmpfile 
-
-			#MAD: Here we need to pull the uid from the json $DEPOSIT/processed/${ulid}.json
-
-
-
-
-
+			echo "{\"status\":\"validation passed\",\"uploadFolder\":\"$ulidFolder\",\"totalSize\":$sz}" > $tmpfile 
 
 			dvr=`curl -s --insecure -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulidFromJson}"`
 			dvst=`echo $dvr | jq -r .status`
@@ -123,15 +105,15 @@ do
 				fi
 			fi
 		else
-			echo "handle error - duplicate upload id $ulid"
+			echo "handle error - duplicate upload id $ulidFolder"
 			echo "problem moving data; bailing out"
 			#TODO - dv isn't listening for this error condition
 			break #FIXME - this breaks out of the loop; aborting the scan (instead of skipping this dataset)
 		fi
 		
-		mv $DEPOSIT/processed/${ulid}.json $HOLD/stage/
+		mv $DEPOSIT/processed/${ulidFolder}.json $HOLD/stage/ #MAD: This errors, do we care?
 		#de-activate key (still in id_dsa.pub if we need it)
-		rm ${DEPOSIT}/${ulid}/.ssh/authorized_keys
+		rm ${DEPOSIT}/${ulidFolder}/.ssh/authorized_keys
 	fi
 done
 
