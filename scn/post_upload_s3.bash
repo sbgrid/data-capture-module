@@ -27,6 +27,8 @@ HOLD=/hold
 retry_delay=60
 SRC=/opt/dcm/
 
+S3HOLD=test-dcm
+
 if [ -e $LOCKFILE ]; then
 	echo "post_upload scan still in progress at " `date` " , aborting"
 	exit
@@ -57,34 +59,49 @@ do
 		mv files.sha files-`date '+%Y%m%d-%H:%M'`.sha # rename previous indicator file
 		echo "checksum failure"
 		tmpfile=/tmp/dcm_fail-$$.json
-		echo "{\"status\":\"validation failed\",\"uploadFolder\":\"$ulidFromJson\",\"totalSize\":0}" > $tmpfile 
+		echo "{\"status\":\"validation failed\",\"uploadFolder\":\"${ulidFromJson}\",\"totalSize\":0}" > $tmpfile 
 		curl --insecure -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulidFromJson}"
 	else
 		# handle checksum success
 		echo "checksums verified"
 
-		#move to HOLD location
-		if [ ! -d ${HOLD}/${ulidFromJson}/${ulidFromJson} ]; then
-			#change to subdirectory to match batch-import code changes
-			mkdir -p ${HOLD}/${ulidFromJson}
+		## MAD: This whole move to hold needs to be rewritten to move to aws instead
+		#move to AWS location
 
-			cp -a ${DEPOSIT}/${ulidFolder}/${ulidFolder}/ ${HOLD}/${ulidFromJson}/
-			# TODO - config for gf user
-			chown -R glassfish:glassfish ${HOLD}/${ulidFromJson}/
-			err=$?
+		#aws s3 mb s3://test-dcm
+		#aws s3 ls s3://${S3HOLD}
+
+
+
+		#move to HOLD location
+		
+		#if [ ! aws s3 ls s3://${S3HOLD}/${datasetIdentifier}/ ]; then    #MAD: need to test this check
+			aws s3 cp --recursive ${DEPOSIT}/${ulidFolder}/${ulidFolder}/ s3://${S3HOLD}/${ulidFromJson}/ #MAD: NOTE THAT THIS DOESN'T COPY EMPTY FOLDERS BUT FOLDERS DON'T REALLY EXIST IN S3
+
+			err=$? #MAD: Not quite sure how this works
 			if (( $err != 0 )) ; then
-				echo "dcm: file move $ulidFolder" 
+				echo "dcm: file move $ulid" 
 				break
 			fi
 			rm -rf ${DEPOSIT}/${ulidFolder}/${ulidFolder}
-			
 			echo "data moved"
 			tmpfile=/tmp/dcm_fail-$$.json # not caring that the success tmp file has "fail" in the name
-			sz=`du -sb ${HOLD}/${ulidFromJson} | awk '{print $1} '`
-			echo "{\"status\":\"validation passed\",\"uploadFolder\":\"$ulidFolder\",\"totalSize\":$sz}" > $tmpfile 
+
+#MAD: Probably need size from s3, but I'm not really sure what its even being used for
+#MADOLD: Next step we get the size of the folder and echo it to a temp file that we then send to dataverse to do checksum validation
+#MADOLD: I think I can skip this for now
+#Maybe, bu: aws s3 ls s3://test-dcm --recursive --summarize
+#Probably better: aws s3 ls s3://<bucketname> --recursive  | grep -v -E "(Bucket: |Prefix: |LastWriteTime|^$|--)" | awk 'BEGIN {total=0}{total+=$3}END{print total/1024/1024" MB"}'
+
+			#sz=`du -sb ${HOLD}/${ulidFromJson} | awk '{print $1} '`
+
+			#MAD: HARDCODED sz
+			echo "{\"status\":\"validation passed\",\"uploadFolder\":\"${ulidFromJson}\",\"totalSize\":9001}" > $tmpfile 
 
 			dvr=`curl -s --insecure -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulidFromJson}"`
 			dvst=`echo $dvr | jq -r .status`
+
+#MAD: This if condition seems pretty ok
 			if [ "OK" != "$dvst" ]; then
 				#TODO - this block should email alerts queue
 				echo "ERROR: dataverse at ${DVHOST} had a problem handling the DCM success API call"
@@ -103,16 +120,19 @@ do
 					fi
 				fi
 			fi
-		else
-			echo "handle error - duplicate upload id $ulidFolder"
-			echo "problem moving data; bailing out"
-			#TODO - dv isn't listening for this error condition
-			break #FIXME - this breaks out of the loop; aborting the scan (instead of skipping this dataset)
-		fi
-		
-		mv $DEPOSIT/processed/${ulidFolder}.json $HOLD/stage/ #MAD: This errors, do we care?
+		# else
+		# 	echo "handle error - duplicate upload id $ulidFolder"
+		# 	echo "problem moving data; bailing out"
+		# 	#TODO - dv isn't listening for this error condition
+		# 	break #FIXME - this breaks out of the loop; aborting the scan (instead of skipping this dataset)
+		# fi
+
+		aws s3 cp $DEPOSIT/processed/${ulidFolder}.json s3://${S3HOLD}/stage/
+
+		#mv $DEPOSIT/processed/${ulidFolder}.json $HOLD/stage/ #MAD: This errors, do we care?
 		#de-activate key (still in id_dsa.pub if we need it)
-		rm ${DEPOSIT}/${ulidFolder}/.ssh/authorized_keys
+#MAD: MAY BE REMOVING ROOT FOLDERS
+#		rm ${DEPOSIT}/${ulidFolder}/.ssh/authorized_keys
 	fi
 done
 
