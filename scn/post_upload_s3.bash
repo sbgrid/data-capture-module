@@ -65,14 +65,6 @@ do
 		# handle checksum success
 		echo "checksums verified"
 
-		## MAD: This whole move to hold needs to be rewritten to move to aws instead
-		#move to AWS location
-
-		#aws s3 mb s3://test-dcm
-		#aws s3 ls s3://${S3HOLD}
-
-
-
 		#move to HOLD location
 		
 		#if [ ! aws s3 ls s3://${S3HOLD}/${datasetIdentifier}/ ]; then    #MAD: need to test this check
@@ -87,16 +79,11 @@ do
 			echo "data moved"
 			tmpfile=/tmp/dcm_fail-$$.json # not caring that the success tmp file has "fail" in the name
 
-#MAD: Probably need size from s3, but I'm not really sure what its even being used for
-#MADOLD: Next step we get the size of the folder and echo it to a temp file that we then send to dataverse to do checksum validation
-#MADOLD: I think I can skip this for now
-#Maybe, bu: aws s3 ls s3://test-dcm --recursive --summarize
-#Probably better: aws s3 ls s3://<bucketname> --recursive  | grep -v -E "(Bucket: |Prefix: |LastWriteTime|^$|--)" | awk 'BEGIN {total=0}{total+=$3}END{print total/1024/1024" MB"}'
+			#This may prove to be very slow with extremely large datasets
+			sz=`aws s3 ls --summarize --human-readable --recursive s3://${S3HOLD}/${ulidFromJson}/ | grep "Total Size: " | cut -d' ' -f 6`
 
-			#sz=`du -sb ${HOLD}/${ulidFromJson} | awk '{print $1} '`
 
-			#MAD: HARDCODED sz
-			echo "{\"status\":\"validation passed\",\"uploadFolder\":\"${ulidFromJson}\",\"totalSize\":9001}" > $tmpfile 
+			echo "{\"status\":\"validation passed\",\"uploadFolder\":\"${ulidFromJson}\",\"totalSize\":$sz}" > $tmpfile 
 
 			dvr=`curl -s --insecure -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulidFromJson}"`
 			dvst=`echo $dvr | jq -r .status`
