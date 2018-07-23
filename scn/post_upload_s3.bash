@@ -67,10 +67,10 @@ do
 
 		#move to HOLD location
 		
-		#if [ ! aws s3 ls s3://${S3HOLD}/${datasetIdentifier}/ ]; then    #MAD: need to test this check
-			aws s3 cp --recursive ${DEPOSIT}/${ulidFolder}/${ulidFolder}/ s3://${S3HOLD}/${ulidFromJson}/ #MAD: NOTE THAT THIS DOESN'T COPY EMPTY FOLDERS BUT FOLDERS DON'T REALLY EXIST IN S3
+		if [ ! `aws s3 ls s3://${S3HOLD}/${ulidFromJson}/`]; then    #this check is different than normal post_upload, we don't use the extra folder level
+			aws s3 cp --recursive ${DEPOSIT}/${ulidFolder}/${ulidFolder}/ s3://${S3HOLD}/${ulidFromJson}/ #this does not copy empty folders from DEPOSIT as folders do not actually exist in s3
 
-			err=$? #MAD: Not quite sure how this works
+			err=$?
 			if (( $err != 0 )) ; then
 				echo "dcm: file move $ulid" 
 				break
@@ -79,16 +79,14 @@ do
 			echo "data moved"
 			tmpfile=/tmp/dcm_fail-$$.json # not caring that the success tmp file has "fail" in the name
 
-			#This may prove to be very slow with extremely large datasets
+			#This may prove to be slow with large datasets
 			sz=`aws s3 ls --summarize --human-readable --recursive s3://${S3HOLD}/${ulidFromJson}/ | grep "Total Size: " | cut -d' ' -f 6`
-
 
 			echo "{\"status\":\"validation passed\",\"uploadFolder\":\"${ulidFromJson}\",\"totalSize\":$sz}" > $tmpfile 
 
 			dvr=`curl -s --insecure -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulidFromJson}"`
 			dvst=`echo $dvr | jq -r .status`
 
-#MAD: This if condition seems pretty ok
 			if [ "OK" != "$dvst" ]; then
 				#TODO - this block should email alerts queue
 				echo "ERROR: dataverse at ${DVHOST} had a problem handling the DCM success API call"
@@ -107,19 +105,18 @@ do
 					fi
 				fi
 			fi
-		# else
-		# 	echo "handle error - duplicate upload id $ulidFolder"
-		# 	echo "problem moving data; bailing out"
-		# 	#TODO - dv isn't listening for this error condition
-		# 	break #FIXME - this breaks out of the loop; aborting the scan (instead of skipping this dataset)
-		# fi
+		else
+			echo "handle error - duplicate upload id $ulidFolder"
+			echo "problem moving data; bailing out"
+			#TODO - dv isn't listening for this error condition
+			break #FIXME - this breaks out of the loop; aborting the scan (instead of skipping this dataset)
+		fi
 
 		aws s3 cp $DEPOSIT/processed/${ulidFolder}.json s3://${S3HOLD}/stage/
 
-		#mv $DEPOSIT/processed/${ulidFolder}.json $HOLD/stage/ #MAD: This errors, do we care?
+		mv $DEPOSIT/processed/${ulidFolder}.json $HOLD/stage/
 		#de-activate key (still in id_dsa.pub if we need it)
-#MAD: MAY BE REMOVING ROOT FOLDERS
-#		rm ${DEPOSIT}/${ulidFolder}/.ssh/authorized_keys
+		rm ${DEPOSIT}/${ulidFolder}/.ssh/authorized_keys
 	fi
 done
 

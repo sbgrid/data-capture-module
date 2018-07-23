@@ -110,7 +110,7 @@ do
 			break #FIXME - this breaks out of the loop; aborting the scan (instead of skipping this dataset)
 		fi
 		
-		mv $DEPOSIT/processed/${ulidFolder}.json $HOLD/stage/ #MAD: This errors, do we care?
+		mv $DEPOSIT/processed/${ulidFolder}.json $HOLD/stage/
 		#de-activate key (still in id_dsa.pub if we need it)
 		rm ${DEPOSIT}/${ulidFolder}/.ssh/authorized_keys
 	fi
