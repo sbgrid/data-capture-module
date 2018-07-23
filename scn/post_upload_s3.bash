@@ -41,7 +41,7 @@ for indicator_file in `find $DEPOSIT -name files.sha`
 do
 
 	ddir=`dirname $indicator_file`
-	ulidFolder=`basename $ddir` #this does not have the pid / in it
+	ulidFolder=`basename $ddir` #this does not have the pid / in it. We alredy did special char filtering before
 
 	# the real ulid (pid) from dataverse with the shoulder (usually FK2/...)
 	ulidFromJson="$(grep -Po '"'"datasetIdentifier"'"\s*:\s*"\K([^"]*)' $DEPOSIT/processed/${ulidFolder}.json)"

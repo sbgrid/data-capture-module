@@ -10,6 +10,7 @@ import os.path
 import sys
 import commands
 import datetime
+import re
 
 #TODO - read from environmental variable
 UPLOAD_ROOT='/deposit/'
@@ -33,6 +34,18 @@ def proc():
     try:
         # retrieve upload ID from form data
         ulid = form['datasetIdentifier'].value
+
+        # check for invalid characters. Error if:
+        #    ulid with special chars removed doesn't match orig (contains special chars)
+        #    ulid with / removed is more than 1 character shorter (ulid contains more than 1 '/')
+        # same logic in usg.py
+        ulidNoSpecial = re.sub('[^a-zA-Z0-9_/\-\.]|( ){2,}','',ulid )
+        ulidNoSlash = re.sub('[/]|( ){2,}','',ulid )
+        if ulid != ulidNoSpecial or len(ulid) > ( len(ulidNoSlash) + 1 ):
+            print('Status:400\nContent-Type: application/json\n\n[]\n')
+            sys.stderr.write('invalid pid for dataset\n')
+            return
+            
         ulid = ulid.replace("/","") #removing the / from the UID w/ shoulder
     except KeyError:
         # meaningless to ask for a transfer script if request doesn't specify which one
