@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
 # create tarball for building staging/prod rpm
-
-v=0.1
+if [ -z ${DCM_VERSION} ]; then
+	v=0.1
+else
+	v=${DCM_VERSION}
+fi
 
 if [ ! -d dist/ ]; then
 	mkdir dist
