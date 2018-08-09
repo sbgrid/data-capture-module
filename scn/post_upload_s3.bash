@@ -112,9 +112,10 @@ do
 			break #FIXME - this breaks out of the loop; aborting the scan (instead of skipping this dataset)
 		fi
 
-		aws s3 cp $DEPOSIT/processed/${ulidFolder}.json s3://${S3HOLD}/stage/
+		#Dataverse does not actually need this file so we aren't going to store it to s3
+		#aws s3 cp $DEPOSIT/processed/${ulidFolder}.json s3://${S3HOLD}/stage/
 
-		mv $DEPOSIT/processed/${ulidFolder}.json $HOLD/stage/
+		rm $DEPOSIT/processed/${ulidFolder}.json
 		#de-activate key (still in id_dsa.pub if we need it)
 		rm ${DEPOSIT}/${ulidFolder}/.ssh/authorized_keys
 	fi
