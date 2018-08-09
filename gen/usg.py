@@ -114,7 +114,6 @@ def proc( req_file, verbose = True, done_dir = '/deposit/processed' ):
     try:
        uid = shared.ulid_check_and_sanitize(uid)
     except ValueError:
-        except ValueError:
         print('Status:400\nContent-Type: application/json\n\n[]\n')
         sys.stderr.write('invalid pid for dataset\n')
         return
