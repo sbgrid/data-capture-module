@@ -11,9 +11,11 @@ import json
 import glob
 import os
 import os.path
-import sys
 import shutil
 import re
+import sys
+sys.path.append('../lib')
+import shared
 
 HOMEDIR = 'deposit' # upload directory
 DURATION_DAYS = 7 # number of days upload accounts will be active
@@ -109,18 +111,14 @@ def proc( req_file, verbose = True, done_dir = '/deposit/processed' ):
     inp.close()
     uid = x['datasetIdentifier']
 
-    # check for invalid characters. Error if:
-    #    uid with special chars removed doesn't match orig (contains special chars)
-    #    uid with / removed is more than 1 character shorter (uid contains more than 1 '/')
-    # same logic in sr.py
-    uidNoSpecial = re.sub('[^a-zA-Z0-9_/\-\.]|( ){2,}','',uid )
-    uidNoSlash = re.sub('[/]|( ){2,}','',uid )
-    if uid != uidNoSpecial or len(uid) > ( len(uidNoSlash) + 1 ):
+    try:
+       uid = shared.ulid_check_and_sanitize(uid)
+    except ValueError:
+        except ValueError:
         print('Status:400\nContent-Type: application/json\n\n[]\n')
         sys.stderr.write('invalid pid for dataset\n')
         return
 
-    uid = uid.replace("/","") #removing the / from the UID w/ shoulder
     if generated_already( uid ):
         # nothing new to do, bail out of this one
         if verbose:
