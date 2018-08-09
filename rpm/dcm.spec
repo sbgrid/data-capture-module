@@ -1,8 +1,8 @@
 Name: dcm
-Version: 0.1
+Version: %{version}
 Release: 0
 Summary: data capture module, rsync+ssh
-Source: dcm-0.1.tar.gz
+Source: dcm-%{version}.tar.gz
 BuildArch: noarch
 BuildRoot: %{_tmppath}/%{name}-${version}
 License: proprietary
@@ -11,8 +11,9 @@ Requires: python python-pip python-dateutil redis lighttpd openssh-server openss
 data capture module, deposition protocol rsync+ssh protocol
 
 %prep
-rm -rf $RPM_BUILD_DIR/dcm
-zcat $RPM_SOURCE_DIR/dcm-0.1.tar.gz | tar -xvf -
+#rm -rf $RPM_BUILD_DIR/dcm
+#zcat $RPM_SOURCE_DIR/dcm-0.1.tar.gz | tar -xvf -
+%setup -c -n dcm
 
 %build
 # empty - no compile needed
@@ -53,7 +54,7 @@ rm -rf %{buildroot}
 /etc/dcm/dcm-rssh.conf
 /opt/dcm/api/*
 /opt/dcm/gen/*
-/opt/dcm/scn/post_upload.bash
+/opt/dcm/scn/post_upload*.bash
 /opt/dcm/requirements.txt
 %dir %attr(0744,lighttpd,lighttpd) /deposit/requests
 %dir %attr(0744,lighttpd,lighttpd) /deposit/gen
