@@ -11,7 +11,7 @@ class TestDCMMock(TestCase):
         dcm.app.testing=True
         self.app=dcm.app.test_client()
     def test_ur0(self):
-        r=self.app.post('/ur.py',data=json.dumps({'datasetId':'d0','userId':'u0'}), content_type='application/json')
+        r=self.app.post('/ur.py',data=json.dumps({'datasetId':'d0','userId':'u0','datasetIdentifier':'d0'}), content_type='application/json')
         self.assertEqual(200, r.status_code)
         j_r = json.loads( r.get_data() )
         j_e = {'status':'OK'}
