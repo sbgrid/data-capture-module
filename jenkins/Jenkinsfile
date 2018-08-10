@@ -1,5 +1,12 @@
 pipeline
 {
+	environment
+	{
+		DCM_VERSION="0.1"
+		prjb="dcm-"+"${DCM_VERSION}"
+		tarball="$prjb" + ".tar.gz"
+		rpmfile="$prjb" + "-0.noarch.rpm" /*always release 0 for the moment*/
+	}
 	agent none
 	stages
 	{
@@ -17,8 +24,8 @@ pipeline
 			steps
 			{
 				sh 'scripts/tarball.bash'
-				archiveArtifacts artifacts: 'dist/dcm-0.1.tar.gz'
-				stash name: 'tarball', includes: 'dist/dcm-0.1.tar.gz'
+				archiveArtifacts artifacts: "dist/${env.tarball}"
+				stash name: 'tarball', includes: "dist/${env.tarball}"
 				stash name: 'spec', includes: 'rpm/*'
 			}
 		}
@@ -39,11 +46,11 @@ pipeline
 				unstash 'tarball'
 				unstash 'spec'
 				sh 'rpmdev-setuptree ; cp rpm/dep/rpmmacros ~/.rpmmacros'
-				sh 'cp dist/dcm-0.1.tar.gz ~/rpmbuild/SOURCES/'
-				sh 'rpmbuild -ba rpm/dcm.spec'
-				sh 'cp ~/rpmbuild/RPMS/noarch/dcm-0.1-0.noarch.rpm dist'
-				archiveArtifacts artifacts: 'dist/dcm-0.1-0.noarch.rpm'
-				stash name: 'rpm', includes: 'dist/dcm-0.1-0.noarch.rpm'
+				sh 'cp dist/$tarball ~/rpmbuild/SOURCES/'
+				sh "rpmbuild -ba --define 'version ${env.DCM_VERSION}' rpm/dcm.spec"
+				sh "cp ~/rpmbuild/RPMS/noarch/${env.rpmfile} dist"
+				archiveArtifacts artifacts: "dist/${env.rpmfile}"
+				stash name: 'rpm', includes: "dist/${env.rpmfile}"
 			}
 		}
 		stage('test rpm')
@@ -53,7 +60,8 @@ pipeline
 			{
 				unstash 'rpm'
 				echo 'setting up dcm client (depositor) and server test environment'
-				sh 'docker-compose -f docker/compose0.yml --project-directory . build'
+				sh "docker-compose -f docker/compose0.yml --project-directory . build --build-arg RPMFILE=${env.rpmfile} dcm"
+				sh "docker-compose -f docker/compose0.yml --project-directory . build --build-arg RPMFILE=${env.rpmfile} client"
 				sh 'docker-compose -f docker/compose0.yml --project-directory . up -d'
 				sh 'sleep 5' /* rather than a wait-for-healthy loop */
 
