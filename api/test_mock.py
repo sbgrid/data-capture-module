@@ -19,6 +19,15 @@ class TestDCMMock(TestCase):
         self.assertEqual( len(j_e), len(j_r) )
         self.assertEqual( j_e.keys()[0], j_r.keys()[0] )
         self.assertEqual( j_e['status'], j_r['status'])
+    def test_ur1(self):
+        r=self.app.post('/ur.py',data=json.dumps({'datasetId':'IPQXJP','userId':'u0','datasetIdentifier':'FK2/IPQXJP'}), content_type='application/json')
+        self.assertEqual(200, r.status_code)
+        j_r = json.loads( r.get_data() )
+        j_e = {'status':'OK'}
+        # I miss assertDictEqual...
+        self.assertEqual( len(j_e), len(j_r) )
+        self.assertEqual( j_e.keys()[0], j_r.keys()[0] )
+        self.assertEqual( j_e['status'], j_r['status'])
     def test_sr0(self):
         r = self.app.post('/sr.py',data={'datasetIdentifier':'d0'})
         self.assertEqual(200, r.status_code)
@@ -29,3 +38,14 @@ class TestDCMMock(TestCase):
             self.assertIn( k_e, x_e.keys() ) #yes, inefficient
             if 'script' != k_e:
                 self.assertEqual( x_e[k_e], x_r[k_e] )
+    def test_sr1(self):
+        r = self.app.post('/sr.py',data={'datasetIdentifier':'FK2/IPQXJP'})
+        self.assertEqual(200, r.status_code)
+        x_e={'datasetIdentifier':'FK2/IPQXJP','userId':'42','script':'placeholder'}
+        x_r = json.loads( r.get_data() )
+        self.assertEqual( len(x_e), len(x_r) )
+        for k_e in x_e.keys():
+            self.assertIn( k_e, x_e.keys() ) #yes, inefficient
+            if 'script' != k_e:
+                self.assertEqual( x_e[k_e], x_r[k_e] )
+        #and yes, also doing copy/paste on tests for new identifier scheme
