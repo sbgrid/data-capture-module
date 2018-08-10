@@ -12,7 +12,6 @@ import glob
 import os
 import os.path
 import shutil
-import re
 import sys
 sys.path.append('../lib')
 import shared
@@ -112,11 +111,11 @@ def proc( req_file, verbose = True, done_dir = '/deposit/processed' ):
     uid = x['datasetIdentifier']
 
     try:
-       uid = shared.ulid_check_and_sanitize(uid)
+        uid = shared.ulid_check_and_sanitize(uid)
     except ValueError:
         print('Status:400\nContent-Type: application/json\n\n[]\n')
         sys.stderr.write('invalid pid for dataset\n')
-        return
+        return None
 
     if generated_already( uid ):
         # nothing new to do, bail out of this one
