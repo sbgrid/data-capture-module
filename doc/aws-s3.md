@@ -12,4 +12,6 @@ Finally, to enable DCM S3:
 - `mv scn/post_upload.bash scn/post_upload_posix.bash`
 - `mv scn/post_upload_s3.bash scn/post_upload.bash`
 
+Or configure the cron job to launch `scn/post_upload_s3.bash` instead of `scn/post_upload.bash` without renaming anything.
+
 At the time of writing, more notes are available on the overall Dataverse DCM S3 integration at https://github.com/IQSS/dataverse/issues/4703
