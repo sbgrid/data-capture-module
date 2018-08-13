@@ -5,7 +5,7 @@ For non-development work, CentOS 6 is *strongly recommended*. Other versions and
 
 *This DCM creates OS accounts - install it on a stand-alone, disposable system*
 
-- configure NFS mounts for `/deposit` (only needs to be accessable from the DCM) and `/hold` (needs to be shared by DCM and Dataverse).
+- configure NFS mounts for `/deposit` (only needs to be accessable from the DCM) and `/hold` (needs to be shared by DCM and Dataverse). Note that it's possible to use AWS S3 instead of NFS if you follow the instrutions at [aws-s3.md](aws-s3.md).
 - download RPM from the github [release page](https://github.com/sbgrid/data-capture-module/releases/latest "release page")
 - install RPM (and necessary dependencies). The EPEL repo is assumed to be available for these dependencies, but is not strictly required if you get the dependencies from elsewhere.
 - install pip dependencies (`pip install -r /opt/dcm/requirements.txt`)
