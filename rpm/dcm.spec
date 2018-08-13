@@ -29,6 +29,7 @@ mkdir -p %{buildroot}/etc/dcm
 cp -r api %{buildroot}/opt/dcm
 cp -r gen %{buildroot}/opt/dcm
 cp -r scn %{buildroot}/opt/dcm
+cp -r lib %{buildroot}/opt/dcm
 mkdir -p %{buildroot}/deposit/requests
 mkdir -p %{buildroot}/deposit/gen
 mkdir -p %{buildroot}/deposit/processed
@@ -54,6 +55,7 @@ rm -rf %{buildroot}
 /etc/dcm/dcm-rssh.conf
 /opt/dcm/api/*
 /opt/dcm/gen/*
+/opt/dcm/lib/*
 /opt/dcm/scn/post_upload*.bash
 /opt/dcm/requirements.txt
 %dir %attr(0744,lighttpd,lighttpd) /deposit/requests

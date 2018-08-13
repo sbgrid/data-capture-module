@@ -11,8 +11,10 @@ import json
 import glob
 import os
 import os.path
-import sys
 import shutil
+import sys
+sys.path.append('../lib')
+import shared
 
 HOMEDIR = 'deposit' # upload directory
 DURATION_DAYS = 7 # number of days upload accounts will be active
@@ -107,6 +109,14 @@ def proc( req_file, verbose = True, done_dir = '/deposit/processed' ):
     x = json.load( inp )
     inp.close()
     uid = x['datasetIdentifier']
+
+    try:
+        uid = shared.ulid_check_and_sanitize(uid)
+    except ValueError:
+        print('Status:400\nContent-Type: application/json\n\n[]\n')
+        sys.stderr.write('invalid pid for dataset\n')
+        return None
+
     if generated_already( uid ):
         # nothing new to do, bail out of this one
         if verbose:

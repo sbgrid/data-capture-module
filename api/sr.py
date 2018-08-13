@@ -7,9 +7,11 @@ API endpoint for script requests
 import cgi
 import json
 import os.path
-import sys
 import commands
 import datetime
+import sys
+sys.path.append('../lib')
+import shared
 
 #TODO - read from environmental variable
 UPLOAD_ROOT='/deposit/'
@@ -33,10 +35,15 @@ def proc():
     try:
         # retrieve upload ID from form data
         ulid = form['datasetIdentifier'].value
+        ulid = shared.ulid_check_and_sanitize(ulid)
     except KeyError:
         # meaningless to ask for a transfer script if request doesn't specify which one
         print('Status:400\nContent-Type: application/json\n\n[]\n')
         sys.stderr.write('no datasetIdentifierField in FORM data\n')
+        return
+    except ValueError:
+        print('Status:400\nContent-Type: application/json\n\n[]\n')
+        sys.stderr.write('invalid pid for dataset\n')
         return
     fn = '/%s/gen/upload-%s.bash' % (UPLOAD_ROOT, ulid)
     if not os.path.exists( fn ):
@@ -51,12 +58,6 @@ def proc():
     with open( os.path.join( UPLOAD_ROOT, 'processed', '%s.json' % ulid ) ) as inp:
         req = json.load( inp )
 
-    # "validate" request file
-    if req['datasetIdentifier'] != ulid:
-        # should never happen - defensive programming, or paranoia depending on perspective
-        print('Status:500\nContent-Type: application/json\n\n[]\n')
-        sys.stderr.write('datasetIdentifier in request file does not match base filename\n')
-        return
     req['script'] = dat
     increment_transfer_expiration( ulid )
     print('Content-Type: application/json\n\n%s' % json.dumps( req ) )

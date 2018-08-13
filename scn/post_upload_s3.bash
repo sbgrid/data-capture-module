@@ -27,6 +27,8 @@ HOLD=/hold
 retry_delay=60
 SRC=/opt/dcm/
 
+S3HOLD=test-dcm
+
 if [ -e $LOCKFILE ]; then
 	echo "post_upload scan still in progress at " `date` " , aborting"
 	exit
@@ -57,34 +59,34 @@ do
 		mv files.sha files-`date '+%Y%m%d-%H:%M'`.sha # rename previous indicator file
 		echo "checksum failure"
 		tmpfile=/tmp/dcm_fail-$$.json
-		echo "{\"status\":\"validation failed\",\"uploadFolder\":\"$ulidFromJson\",\"totalSize\":0}" > $tmpfile 
+		echo "{\"status\":\"validation failed\",\"uploadFolder\":\"${ulidFromJson}\",\"totalSize\":0}" > $tmpfile 
 		curl --insecure -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulidFromJson}"
 	else
 		# handle checksum success
 		echo "checksums verified"
 
 		#move to HOLD location
-		if [ ! -d ${HOLD}/${ulidFromJson}/${ulidFromJson} ]; then
-			#change to subdirectory to match batch-import code changes
-			mkdir -p ${HOLD}/${ulidFromJson}
+		
+		if [ ! `aws s3 ls s3://${S3HOLD}/${ulidFromJson}/`]; then    #this check is different than normal post_upload, we don't use the extra folder level
+			aws s3 cp --recursive ${DEPOSIT}/${ulidFolder}/${ulidFolder}/ s3://${S3HOLD}/${ulidFromJson}/ #this does not copy empty folders from DEPOSIT as folders do not actually exist in s3
 
-			cp -a ${DEPOSIT}/${ulidFolder}/${ulidFolder}/ ${HOLD}/${ulidFromJson}/
-			# TODO - config for gf user
-			chown -R glassfish:glassfish ${HOLD}/${ulidFromJson}/
 			err=$?
 			if (( $err != 0 )) ; then
-				echo "dcm: file move $ulidFolder" 
+				echo "dcm: file move $ulid" 
 				break
 			fi
 			rm -rf ${DEPOSIT}/${ulidFolder}/${ulidFolder}
-			
 			echo "data moved"
 			tmpfile=/tmp/dcm_fail-$$.json # not caring that the success tmp file has "fail" in the name
-			sz=`du -sb ${HOLD}/${ulidFromJson} | awk '{print $1} '`
-			echo "{\"status\":\"validation passed\",\"uploadFolder\":\"$ulidFolder\",\"totalSize\":$sz}" > $tmpfile 
+
+			#This may prove to be slow with large datasets
+			sz=`aws s3 ls --summarize --human-readable --recursive s3://${S3HOLD}/${ulidFromJson}/ | grep "Total Size: " | cut -d' ' -f 6`
+
+			echo "{\"status\":\"validation passed\",\"uploadFolder\":\"${ulidFromJson}\",\"totalSize\":$sz}" > $tmpfile 
 
 			dvr=`curl -s --insecure -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulidFromJson}"`
 			dvst=`echo $dvr | jq -r .status`
+
 			if [ "OK" != "$dvst" ]; then
 				#TODO - this block should email alerts queue
 				echo "ERROR: dataverse at ${DVHOST} had a problem handling the DCM success API call"
@@ -109,8 +111,11 @@ do
 			#TODO - dv isn't listening for this error condition
 			break #FIXME - this breaks out of the loop; aborting the scan (instead of skipping this dataset)
 		fi
-		
-		mv $DEPOSIT/processed/${ulidFolder}.json $HOLD/stage/
+
+		#Dataverse does not actually need this file so we aren't going to store it to s3
+		#aws s3 cp $DEPOSIT/processed/${ulidFolder}.json s3://${S3HOLD}/stage/
+
+		rm $DEPOSIT/processed/${ulidFolder}.json
 		#de-activate key (still in id_dsa.pub if we need it)
 		rm ${DEPOSIT}/${ulidFolder}/.ssh/authorized_keys
 	fi
