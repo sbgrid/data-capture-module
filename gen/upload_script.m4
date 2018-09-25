@@ -102,6 +102,7 @@ case "$y" in
 			echo "transferring checksum"
 			scp -i ${keyfile} -P ${hostport} -o UserKnownHostsFile=$hostkey $checksumfile ${uid}@${hostname}:~/${uid}/files.sha
 			echo "ALL TRANSFERS COMPLETE"
+			echo "Please allow several minutes (depending on the size of your dataset) while the data file checksums are verified; once this is completed, the Dataverse UI will be updated"
 		fi
 
                 ;;
