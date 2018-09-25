@@ -34,7 +34,7 @@ def upload_request():
     if None != UR_FAIL_WITH:
         return Response('',status=UR_FAIL_WITH)
     xdat = json.loads( request.data )
-    print('debug: recieved request for creation of transfer script for dataset "%s" for user "%s"' % ( xdat['datasetIdentifier'], xdat['userId'] ) )
+    #print('debug: recieved request for creation of transfer script for dataset "%s" for user "%s"' % ( xdat['datasetIdentifier'], xdat['userId'] ) )
     data = {}
     data['status'] = 'OK'
     resp = Response(response=json.dumps(data),
@@ -55,7 +55,7 @@ def script_request():
     print('debug: recieved script request for dataset "%s" ' % dset_id)
     with open('rsync.sh', 'r') as myfile:
         script=myfile.read()
-    data = { 'script' : script ,"datasetIdentifier":dset_id ,"userId":42 }
+    data = { 'script' : script ,"datasetIdentifier":dset_id ,"userId":'42' }
     resp = Response(response=json.dumps(data),
         status=200, \
         mimetype="application/json")
