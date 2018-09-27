@@ -68,13 +68,11 @@ pipeline
 				echo 'testing successful validation'
 				sh 'docker exec -t dcm_client scripts/test_client.sh dset1 user /home/depositor/dataset'
 				sh 'docker exec dcm_server ls /deposit/dset1/dset1/files.sha'
+				echo 'limited security testing (in transfer testing so keys are valid)'
+				sh 'docker exec -t dcm_client scripts/test_paranoia.bash'
 				sh 'docker exec dcm_server /opt/dcm/scn/post_upload.bash'
 				sh 'docker exec dcm_server ls /hold/dset1/dset1/files.sha'
 
-				echo 'limited security testing'
-				sh 'docker exec -t dcm_client scripts/test_paranoia.bash'
-				
-				
 				echo 'testing failed validation'
 				sh 'docker exec -t dcm_client scripts/test_client.sh dset2 user /home/depositor/dataset'
 				sh 'docker exec dcm_server ls /deposit/dset2/dset2/files.sha'
@@ -106,13 +104,11 @@ pipeline
 				echo 'testing successful validation'
 				sh 'docker exec -t dcm_client scripts/test_client.sh dset1 user /home/depositor/dataset'
 				sh 'docker exec dcm_server ls /deposit/dset1/dset1/files.sha'
+				echo 'limited security testing (in transfer testing so keys are valid)'
+				sh 'docker exec -t dcm_client scripts/test_paranoia.bash'
 				sh 'docker exec dcm_server /opt/dcm/scn/post_upload.bash'
 				sh 'docker exec dcm_server ls /hold/dset1/dset1/files.sha'
 
-				echo 'limited security testing'
-				sh 'docker exec -t dcm_client scripts/test_paranoia.bash'
-				
-				
 				echo 'testing failed validation'
 				sh 'docker exec -t dcm_client scripts/test_client.sh dset2 user /home/depositor/dataset'
 				sh 'docker exec dcm_server ls /deposit/dset2/dset2/files.sha'
