@@ -6,13 +6,13 @@ services:
   dcm:
     build:
       context: .
-      dockerfile: docker/c6test.dockerfile
+      #dockerfile: docker/c6test.dockerfile
+      dockerfile: docker/c7server.dockerfile
     container_name: dcm_server
   client:
     build: 
       context: .
-      #dockerfile: docker/c6client.dockerfile
-      dockerfile: docker/c7server.dockerfile
+      dockerfile: docker/c6client.dockerfile
     # necessary for docker-compose to keep the client container running
     command: sleep infinity
     container_name: dcm_client
