@@ -11,7 +11,7 @@ RUN yum localinstall -y /tmp/${RPMFILE}
 RUN pip install -r /opt/dcm/requirements.txt
 RUN /root/test_install.sh
 RUN useradd glassfish
-COPY docker/entrypoint-c7server.sh /
+COPY docker/entrypoint-c7server.bash /
 EXPOSE 80
 EXPOSE 22
-CMD ["/entrypoint-c7server.sh"]
+CMD ["/entrypoint-c7server.bash"]
