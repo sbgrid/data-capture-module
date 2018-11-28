@@ -4,7 +4,7 @@
 
 FROM centos:6
 # starting centos 6 build image for DCM
-RUN yum install -y rpm-build python-setuptools wget rpmdevtools
+RUN yum install -y rpm-build python-setuptools wget rpmdevtools zip
 
 # need to match the jenkins uid/gid for this to work properly.
 # FIXME - this shouldn't be hard-coded

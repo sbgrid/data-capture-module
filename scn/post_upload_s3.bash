@@ -68,29 +68,20 @@ do
 		#move to HOLD location
 		
 		if [ ! `aws s3 ls s3://${S3HOLD}/${ulidFromJson}/`]; then    #this check is different than normal post_upload, we don't use the extra folder level
-			#MAD: Here we'll need to make the package a zip and upload it
-			#This probably will need a new checksum, I forget how we're doing that...
-			#will need to install zip
-			#yum install zip #not here
-
-			#MAD: Should we be zipping to a different temp location?
 			packageName="package_$ulidFolder"
 			packageExt="zip"
-			#Am i correctly cleaning up my new files?
-			echo "beginning zip of ${DEPOSIT}/${ulidFolder}/${ulidFolder}/"
+
 			cd ${DEPOSIT}/${ulidFolder}/
 
 			#It would be awesome to someday zip everything while it is being streamed.
+			echo "beginning zip of ${DEPOSIT}/${ulidFolder}/${ulidFolder}/"
 			zip -r $packageName ${ulidFolder}/ #There are two layers of ${ulidFolder}
 
-
-
-			#shasum $(find . -type f) > $checksumfile 
 			shasum ${packageName}.${packageExt} > ${packageName}.sha
 
 			echo "test: ${DEPOSIT}/${ulidFolder}/$packageName"
-			aws s3 cp ${packageName}.${packageExt} s3://${S3HOLD}/${ulidFromJson}/ #this does not copy empty folders from DEPOSIT as folders do not actually exist in s3
-			aws s3 cp ${packageName}.sha s3://${S3HOLD}/${ulidFromJson}/ #this does not copy empty folders from DEPOSIT as folders do not actually exist in s3
+			aws s3 cp ${packageName}.${packageExt} s3://${S3HOLD}/${ulidFromJson}/
+			aws s3 cp ${packageName}.sha s3://${S3HOLD}/${ulidFromJson}/
 
 			err=$?
 			if (( $err != 0 )) ; then
