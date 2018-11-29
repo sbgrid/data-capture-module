@@ -1,0 +1,20 @@
+
+version: '3'
+
+services:
+  dcm:
+    build:
+      context: .
+      dockerfile: docker/c6test.dockerfile
+      #dockerfile: docker/c7server.dockerfile
+    container_name: dcm_server
+  client:
+    build: 
+      context: .
+      dockerfile: docker/c6client.dockerfile
+    # necessary for docker-compose to keep the client container running
+    command: sleep infinity
+    container_name: dcm_client
+    # connect with `docker -it dcm_client bash` after docker-compose up
+    environment:
+      DCM_HOST: dcm
