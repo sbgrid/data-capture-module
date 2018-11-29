@@ -2,7 +2,7 @@ pipeline
 {
 	environment
 	{
-		DCM_VERSION="0.3"
+		DCM_VERSION="0.4"
 		prjb="dcm-"+"${DCM_VERSION}"
 		tarball="$prjb" + ".tar.gz"
 		rpmfile="$prjb" + "-0.noarch.rpm" /*always release 0 for the moment*/
