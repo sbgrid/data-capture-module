@@ -2,7 +2,7 @@ pipeline
 {
 	environment
 	{
-		DCM_VERSION="0.3"
+		DCM_VERSION="0.4"
 		prjb="dcm-"+"${DCM_VERSION}"
 		tarball="$prjb" + ".tar.gz"
 		rpmfile="$prjb" + "-0.noarch.rpm" /*always release 0 for the moment*/
@@ -53,25 +53,26 @@ pipeline
 				stash name: 'rpm', includes: "dist/${env.rpmfile}"
 			}
 		}
-		stage('test rpm')
+		stage('test rpm, CentOS 6')
 		{
 			agent any
 			steps
 			{
 				unstash 'rpm'
 				echo 'setting up dcm client (depositor) and server test environment'
-				sh "docker-compose -f docker/compose0.yml --project-directory . build --build-arg RPMFILE=${env.rpmfile} dcm"
-				sh "docker-compose -f docker/compose0.yml --project-directory . build --build-arg RPMFILE=${env.rpmfile} client"
-				sh 'docker-compose -f docker/compose0.yml --project-directory . up -d'
+				sh "docker-compose -f docker/compose-c6.yml --project-directory . build --build-arg RPMFILE=${env.rpmfile} dcm"
+				sh "docker-compose -f docker/compose-c6.yml --project-directory . build --build-arg RPMFILE=${env.rpmfile} client"
+				sh 'docker-compose -f docker/compose-c6.yml --project-directory . up -d'
 				sh 'sleep 5' /* rather than a wait-for-healthy loop */
 
 				echo 'testing successful validation'
 				sh 'docker exec -t dcm_client scripts/test_client.sh dset1 user /home/depositor/dataset'
 				sh 'docker exec dcm_server ls /deposit/dset1/dset1/files.sha'
+				echo 'limited security testing (in transfer testing so keys are valid)'
+				sh 'docker exec -t dcm_client scripts/test_paranoia.bash'
 				sh 'docker exec dcm_server /opt/dcm/scn/post_upload.bash'
 				sh 'docker exec dcm_server ls /hold/dset1/dset1/files.sha'
-				
-				
+
 				echo 'testing failed validation'
 				sh 'docker exec -t dcm_client scripts/test_client.sh dset2 user /home/depositor/dataset'
 				sh 'docker exec dcm_server ls /deposit/dset2/dset2/files.sha'
@@ -84,8 +85,43 @@ pipeline
 			{
 				always
 				{
-					sh 'docker-compose -f docker/compose0.yml --project-directory . down'
-					/*sh 'docker-compose -f docker/compose0.yml --project-directory . rm -f'*/
+					sh 'docker-compose -f docker/compose-c6.yml --project-directory . down'
+				}
+			}
+		}
+		stage('test rpm, CentOS 7')
+		{
+			agent any
+			steps
+			{
+				unstash 'rpm'
+				echo 'setting up dcm client (depositor) and server test environment'
+				sh "docker-compose -f docker/compose-c7.yml --project-directory . build --build-arg RPMFILE=${env.rpmfile} dcm"
+				sh "docker-compose -f docker/compose-c7.yml --project-directory . build --build-arg RPMFILE=${env.rpmfile} client"
+				sh 'docker-compose -f docker/compose-c7.yml --project-directory . up -d'
+				sh 'sleep 5' /* rather than a wait-for-healthy loop */
+
+				echo 'testing successful validation'
+				sh 'docker exec -t dcm_client scripts/test_client.sh dset1 user /home/depositor/dataset'
+				sh 'docker exec dcm_server ls /deposit/dset1/dset1/files.sha'
+				echo 'limited security testing (in transfer testing so keys are valid)'
+				sh 'docker exec -t dcm_client scripts/test_paranoia.bash'
+				sh 'docker exec dcm_server /opt/dcm/scn/post_upload.bash'
+				sh 'docker exec dcm_server ls /hold/dset1/dset1/files.sha'
+
+				echo 'testing failed validation'
+				sh 'docker exec -t dcm_client scripts/test_client.sh dset2 user /home/depositor/dataset'
+				sh 'docker exec dcm_server ls /deposit/dset2/dset2/files.sha'
+				sh 'docker exec dcm_server rm /deposit/dset2/dset2/d0.dat'
+				sh 'docker exec dcm_server /opt/dcm/scn/post_upload.bash'
+				sh 'docker exec dcm_server ls /deposit/dset2/dset2/d2.dat' /*files.sha gets renamed so the user can retry */
+				
+			}
+			post
+			{
+				always
+				{
+					sh 'docker-compose -f docker/compose-c7.yml --project-directory . down'
 				}
 			}
 		}
