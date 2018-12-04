@@ -2,7 +2,7 @@
 
 FROM centos:7
 # starting centos 7 build image for DCM
-RUN yum install -y rpm-build python-setuptools wget zip
+RUN yum install -y rpm-build python-setuptools wget
 RUN useradd builder
 
 #USER builder

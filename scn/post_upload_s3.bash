@@ -26,6 +26,7 @@ DEPOSIT=/deposit
 HOLD=/hold
 retry_delay=60
 SRC=/opt/dcm/
+packageExt="zip"
 
 S3HOLD=test-dcm
 
@@ -69,23 +70,25 @@ do
 		
 		if [ ! `aws s3 ls s3://${S3HOLD}/${ulidFromJson}/`]; then    #this check is different than normal post_upload, we don't use the extra folder level
 			packageName="package_$ulidFolder"
-			packageExt="zip"
+	
 
 			cd ${DEPOSIT}/${ulidFolder}/
 
 			#It would be awesome to someday zip everything while it is being streamed.
 			echo "beginning zip of ${DEPOSIT}/${ulidFolder}/${ulidFolder}/"
 			zip -r $packageName ${ulidFolder}/ #There are two layers of ${ulidFolder}
+			err=$?
+			if (( $err != 0 )) ; then
+				echo "dcm: zip package $ulid" 
+				break
+			fi
 
 			shasum ${packageName}.${packageExt} > ${packageName}.sha
 
-			echo "test: ${DEPOSIT}/${ulidFolder}/$packageName"
-			aws s3 cp ${packageName}.${packageExt} s3://${S3HOLD}/${ulidFromJson}/
-			aws s3 cp ${packageName}.sha s3://${S3HOLD}/${ulidFromJson}/
-
+			aws s3 cp ${packageName}.${packageExt} s3://${S3HOLD}/${ulidFromJson}/ && aws s3 cp ${packageName}.sha s3://${S3HOLD}/${ulidFromJson}/
 			err=$?
 			if (( $err != 0 )) ; then
-				echo "dcm: file move $ulid" 
+				echo "dcm: aws file move $ulid" 
 				break
 			fi
 			rm -rf ${ulidFolder}
@@ -93,7 +96,7 @@ do
 			echo "data moved"
 			tmpfile=/tmp/dcm_fail-$$.json # not caring that the success tmp file has "fail" in the name
 
-			sz=`aws s3 ls --summarize --human-readable s3://${S3HOLD}/${ulidFromJson}/$packageName | grep "Total Size: " | cut -d' ' -f 6`
+			sz=`aws s3 ls --summarize --human-readable s3://${S3HOLD}/${ulidFromJson}/${packageName}.${packageExt} | grep "Total Size: " | cut -d' ' -f 6`
 
 			echo "{\"status\":\"validation passed\",\"uploadFolder\":\"${ulidFromJson}\",\"totalSize\":$sz}" > $tmpfile 
 
