@@ -26,6 +26,7 @@ DEPOSIT=/deposit
 HOLD=/hold
 retry_delay=60
 SRC=/opt/dcm/
+packageExt="zip"
 
 S3HOLD=test-dcm
 
@@ -68,24 +69,40 @@ do
 		#move to HOLD location
 		
 		if [ ! `aws s3 ls s3://${S3HOLD}/${ulidFromJson}/`]; then    #this check is different than normal post_upload, we don't use the extra folder level
-			aws s3 cp --recursive ${DEPOSIT}/${ulidFolder}/${ulidFolder}/ s3://${S3HOLD}/${ulidFromJson}/ #this does not copy empty folders from DEPOSIT as folders do not actually exist in s3
+			packageName="package_$ulidFolder"
+	
 
+			cd ${DEPOSIT}/${ulidFolder}/
+
+			#It would be awesome to someday zip everything while it is being streamed.
+			echo "beginning zip of ${DEPOSIT}/${ulidFolder}/${ulidFolder}/"
+			zip -r $packageName ${ulidFolder}/ #There are two layers of ${ulidFolder}
 			err=$?
 			if (( $err != 0 )) ; then
-				echo "dcm: file move $ulid" 
+				echo "dcm: zip package $ulid" 
 				break
 			fi
-			rm -rf ${DEPOSIT}/${ulidFolder}/${ulidFolder}
+
+			shasum ${packageName}.${packageExt} > ${packageName}.sha
+
+			aws s3 cp ${packageName}.${packageExt} s3://${S3HOLD}/${ulidFromJson}/ && aws s3 cp ${packageName}.sha s3://${S3HOLD}/${ulidFromJson}/
+			err=$?
+			if (( $err != 0 )) ; then
+				echo "dcm: aws file move $ulid" 
+				break
+			fi
+			rm -rf ${ulidFolder}
+			rm -rf $packageName
 			echo "data moved"
 			tmpfile=/tmp/dcm_fail-$$.json # not caring that the success tmp file has "fail" in the name
 
-			#This may prove to be slow with large datasets
-			sz=`aws s3 ls --summarize --human-readable --recursive s3://${S3HOLD}/${ulidFromJson}/ | grep "Total Size: " | cut -d' ' -f 6`
+			sz=`aws s3 ls --summarize --human-readable s3://${S3HOLD}/${ulidFromJson}/${packageName}.${packageExt} | grep "Total Size: " | cut -d' ' -f 6`
 
 			echo "{\"status\":\"validation passed\",\"uploadFolder\":\"${ulidFromJson}\",\"totalSize\":$sz}" > $tmpfile 
 
+
 			dvr=`curl -s --insecure -H "X-Dataverse-key: ${DVAPIKEY}" -H "Content-type: application/json" -X POST --upload-file $tmpfile "${DVHOST}/api/datasets/:persistentId/dataCaptureModule/checksumValidation?persistentId=doi:${DOI_SHOULDER}/${ulidFromJson}"`
-			dvst=`echo $dvr | jq -r .status`
+			dvst=`echo $dvr | jq -r .status` #jq errors when dataverse returns a 500 because it returns it as html
 
 			if [ "OK" != "$dvst" ]; then
 				#TODO - this block should email alerts queue
@@ -114,7 +131,7 @@ do
 
 		#Dataverse does not actually need this file so we aren't going to store it to s3
 		#aws s3 cp $DEPOSIT/processed/${ulidFolder}.json s3://${S3HOLD}/stage/
-
+		cd ../..
 		rm $DEPOSIT/processed/${ulidFolder}.json
 		#de-activate key (still in id_dsa.pub if we need it)
 		rm ${DEPOSIT}/${ulidFolder}/.ssh/authorized_keys
