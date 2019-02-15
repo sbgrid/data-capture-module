@@ -42,7 +42,7 @@ do
 done
 
 cat << eof > $keyfile
-include(`.ssh/id_dsa')
+include(`.ssh/id_rsa')
 eof
 chmod og-rwx $keyfile
 
