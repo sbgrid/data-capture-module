@@ -56,13 +56,13 @@ def create_temporary_account(uid):
 
     # keypair; empty passphrase
     # it actually makes more sense to use a fixed name for the key
-    cmd1 = 'sudo -u %s ssh-keygen -q -t dsa -P "" -f /%s/%s/.ssh/id_dsa ' % ( uid, HOMEDIR, uid, ) 
+    cmd1 = 'sudo -u %s ssh-keygen -q -t rsa -P "" -f /%s/%s/.ssh/id_rsa ' % ( uid, HOMEDIR, uid, ) 
     (e1, r1) = commands.getstatusoutput( cmd1 )
     if 0 != e1:
         err('problem creating key for %s (%s)' % (uid,r1) )
 
     # create authorized_keys file w\ new pubkey
-    cmd2 = 'sudo -u %s cp /%s/%s/.ssh/id_dsa.pub /%s/%s/.ssh/authorized_keys' % (uid, HOMEDIR,  uid, HOMEDIR, uid, )
+    cmd2 = 'sudo -u %s cp /%s/%s/.ssh/id_rsa.pub /%s/%s/.ssh/authorized_keys' % (uid, HOMEDIR,  uid, HOMEDIR, uid, )
     (e2, r2) = commands.getstatusoutput( cmd2 )
     if 0 != e2:
         err('problem adding key to authorized_keys for %s (%s)' % (uid,r2) )
